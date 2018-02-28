@@ -1,24 +1,17 @@
 package com.slackar.popularmovies;
 
-import android.graphics.Movie;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.slackar.popularmovies.Utils.RetrofitClient;
-import com.slackar.popularmovies.data.MoviesList;
 import com.squareup.picasso.Picasso;
-
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -57,7 +50,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements View.OnCl
 
     // Error message
     @BindView(R.id.error_message_details)
-    LinearLayout mErrorMessageView;
+    ViewGroup mErrorMessageView;
     @BindView(R.id.error_tv)
     TextView mErrorTV;
     @BindView(R.id.retry_button)
@@ -93,7 +86,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements View.OnCl
                     populateUI();
                     mLoadingPB.setVisibility(View.GONE);
                 } else {
-                    showErrorMessage(getString(R.string.error_internet));
+                    showErrorMessage(getString(R.string.error_server));
                     Log.w(TAG, getString(R.string.error_server_status) + response.code());
                 }
             }

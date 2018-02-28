@@ -1,39 +1,31 @@
 package com.slackar.popularmovies;
 
-import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.slackar.popularmovies.Utils.RetrofitClient;
-import com.slackar.popularmovies.data.Movie;
 import com.slackar.popularmovies.data.MoviePoster;
 import com.slackar.popularmovies.data.MoviesList;
 
-import java.net.URL;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -49,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     // Error message
     @BindView(R.id.error_message_posters)
-    LinearLayout mErrorMessageView;
+    ViewGroup mErrorMessageView;
     @BindView(R.id.error_tv)
     TextView mErrorTV;
     @BindView(R.id.retry_button)
@@ -80,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /* Download and parse a list of movies using Retrofit */
-    public void retrievePosters() {
+    private void retrievePosters() {
         mLoadingPB.setVisibility(View.VISIBLE);
         Call<MoviesList> getCall = RetrofitClient.getPosters(mSortType);
 
@@ -90,6 +82,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (response.isSuccessful()) {
                     hideErrorMessage();
                     mMoviesList = response.body().getResults();
+                    if (mMoviesList.isEmpty()) {
+                        showErrorMessage(getString(R.string.error_empty_list));
+                        return;
+                    }
                     mMovieAdapter.setMovies(mMoviesList);
                     mRecyclerView.setAdapter(mMovieAdapter);
 
@@ -102,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 getString(R.string.toast_highest_rated), Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    showErrorMessage(getString(R.string.error_internet));
+                    showErrorMessage(getString(R.string.error_server));
                     Log.w(TAG, getString(R.string.error_server_status) + response.code());
                 }
             }
