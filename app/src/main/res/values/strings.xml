@@ -1,0 +1,37 @@
+<resources>
+    <string name="app_name">Popular Movies</string>
+
+    <!--Used in overflow menu to sort movie posters in various ways-->
+    <string name="menu_most_popular">Sort by popularity</string>
+    <string name="menu_highest_rated">Sort by rating</string>
+
+    <!--Error messages when retrieving posters or movie details-->
+    <string name="error_server">Unable to establish connection. Server maybe down.\n\n Please try again later.</string>
+    <string name="error_server_status">HTTP Status code: </string>
+    <string name="error_internet">Unable to establish connection.\n\n Please check your
+        Cell/Wi-Fi signal and try again.</string>
+
+    <string name="button_try_again">Retry</string>
+
+    <!--Toast message shown after movie sorting is changed-->
+    <string name="toast_most_popular">Most popular movies.</string>
+    <string name="toast_highest_rated">Highest rated movies.</string>
+
+    <!--Labels used in activity_movie_details.xml-->
+    <string name="release_date_label">Release Date</string>
+    <string name="vote_average_label">Average Rating</string>
+
+    <!--a11y used in activity_movie_details.xml and poster_grid_item.xml-->
+    <string name="poster_a11y">Movie poster</string>
+    <string name="backdrop_a11y">Movie backdrop image</string>
+
+    <!--tools:text used in activity_movie_details.xml-->
+    <string name="toolstext_title" translatable="false">Dilwale Dulhania Le Jayenge</string>
+    <string name="toolstext_release_date" translatable="false">1995-10-20</string>
+    <string name="toolstext_vote_average" translatable="false">9.2</string>
+    <string name="toolstext_overview" translatable="false">Raj is a rich, carefree, happy-go-lucky
+        second generation NRI. Simran is the daughter of Chaudhary Baldev Singh, who in spite of
+        being an NRI is very strict about adherence to Indian values. Simran has left for India to
+        be married to her childhood fiancé. Raj leaves for India with a mission at his hands, to
+        claim his lady love under the noses of her whole family. Thus begins a saga.</string>
+</resources>
