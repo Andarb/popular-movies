@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -37,7 +38,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
     // Movie details and labels
     @BindView(R.id.movie_details_view)
-    TextView mMovieDetailsView;
+    ViewGroup mMovieDetailsView;
     @BindView(R.id.backdrop_iv)
     ImageView mBackdropIV;
     @BindView(R.id.title_tv)
