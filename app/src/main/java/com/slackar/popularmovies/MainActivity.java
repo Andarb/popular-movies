@@ -46,6 +46,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     RecyclerView mRecyclerView;
     @BindView(R.id.posters_loading_pb)
     ProgressBar mLoadingPB;
+
+    // Error message
     @BindView(R.id.error_message_posters)
     LinearLayout mErrorMessageView;
     @BindView(R.id.error_tv)

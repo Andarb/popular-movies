@@ -7,6 +7,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -25,7 +26,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MovieDetailsActivity extends AppCompatActivity {
+public class MovieDetailsActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = MovieDetailsActivity.class.getSimpleName();
 
     // Key for the movie ID value passed with intent from MainActivity
@@ -59,8 +60,11 @@ public class MovieDetailsActivity extends AppCompatActivity {
     LinearLayout mErrorMessageView;
     @BindView(R.id.error_tv)
     TextView mErrorTV;
+    @BindView(R.id.retry_button)
+    Button mRetryButton;
 
     private com.slackar.popularmovies.data.Movie mMovie;
+    private String mMovieId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,15 +72,16 @@ public class MovieDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_movie_details);
 
         ButterKnife.bind(this);
+        mRetryButton.setOnClickListener(this);
 
-        String id = getIntent().getStringExtra(MOVIE_ID_INTENT_KEY);
-        retrieveMovieDetails(id);
+        mMovieId = getIntent().getStringExtra(MOVIE_ID_INTENT_KEY);
+        retrieveMovieDetails();
     }
 
     /* Download and parse movie details using Retrofit */
-    private void retrieveMovieDetails(String movieId) {
+    private void retrieveMovieDetails() {
         hideErrorMessage();
-        Call<com.slackar.popularmovies.data.Movie> getCall = RetrofitClient.getMovieDetails(movieId);
+        Call<com.slackar.popularmovies.data.Movie> getCall = RetrofitClient.getMovieDetails(mMovieId);
 
         getCall.enqueue(new Callback<com.slackar.popularmovies.data.Movie>() {
             @Override
@@ -122,5 +127,11 @@ public class MovieDetailsActivity extends AppCompatActivity {
         mMovieDetailsView.setVisibility(View.GONE);
         mErrorTV.setText(error);
         mErrorMessageView.setVisibility(View.VISIBLE);
+    }
+
+    /* Try to retrieve movie details again, when the 'Retry' button is clicked in the error message */
+    @Override
+    public void onClick(View v) {
+        retrieveMovieDetails();
     }
 }
