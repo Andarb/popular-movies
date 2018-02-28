@@ -80,17 +80,18 @@ public class MovieDetailsActivity extends AppCompatActivity implements View.OnCl
 
     /* Download and parse movie details using Retrofit */
     private void retrieveMovieDetails() {
-        hideErrorMessage();
+        mLoadingPB.setVisibility(View.VISIBLE);
         Call<com.slackar.popularmovies.data.Movie> getCall = RetrofitClient.getMovieDetails(mMovieId);
 
         getCall.enqueue(new Callback<com.slackar.popularmovies.data.Movie>() {
             @Override
             public void onResponse(Call<com.slackar.popularmovies.data.Movie> call, Response<com.slackar.popularmovies.data.Movie> response) {
                 if (response.isSuccessful()) {
+                    hideErrorMessage();
                     mMovie = response.body();
 
                     populateUI();
-                    mLoadingPB.setVisibility(View.INVISIBLE);
+                    mLoadingPB.setVisibility(View.GONE);
                 } else {
                     showErrorMessage(getString(R.string.error_internet));
                     Log.w(TAG, getString(R.string.error_server_status) + response.code());
@@ -118,7 +119,6 @@ public class MovieDetailsActivity extends AppCompatActivity implements View.OnCl
     private void hideErrorMessage() {
         mErrorMessageView.setVisibility(View.GONE);
         mMovieDetailsView.setVisibility(View.VISIBLE);
-        mLoadingPB.setVisibility(View.VISIBLE);
     }
 
     /* Shows the error message and hides everything else */

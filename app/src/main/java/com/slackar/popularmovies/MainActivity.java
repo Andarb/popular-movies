@@ -81,13 +81,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /* Download and parse a list of movies using Retrofit */
     public void retrievePosters() {
-        hideErrorMessage();
+        mLoadingPB.setVisibility(View.VISIBLE);
         Call<MoviesList> getCall = RetrofitClient.getPosters(mSortType);
 
         getCall.enqueue(new Callback<MoviesList>() {
             @Override
             public void onResponse(Call<MoviesList> call, Response<MoviesList> response) {
                 if (response.isSuccessful()) {
+                    hideErrorMessage();
                     mMoviesList = response.body().getResults();
                     mMovieAdapter.setMovies(mMoviesList);
                     mRecyclerView.setAdapter(mMovieAdapter);
@@ -117,7 +118,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void hideErrorMessage() {
         mErrorMessageView.setVisibility(View.GONE);
         mRecyclerView.setVisibility(View.VISIBLE);
-        mLoadingPB.setVisibility(View.VISIBLE);
     }
 
     /* Shows the error message and hides everything else */
