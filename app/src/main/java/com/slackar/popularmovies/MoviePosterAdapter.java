@@ -9,11 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.slackar.popularmovies.data.Movie;
 import com.slackar.popularmovies.data.MoviePoster;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -21,7 +19,7 @@ import butterknife.ButterKnife;
 
 public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.PosterViewHolder> {
 
-    private Context mContext;
+    private final Context mContext;
     private List<MoviePoster> mMovies;
 
     // Poster url details
@@ -34,7 +32,8 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
     }
 
     class PosterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        @BindView(R.id.list_item_poster) ImageView listItemPoster;
+        @BindView(R.id.list_item_poster)
+        ImageView listItemPoster;
 
         /* Bind ImageView of the poster, and set an OnClickListener on the list item */
         public PosterViewHolder(View itemView) {

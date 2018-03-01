@@ -18,10 +18,10 @@ public final class RetrofitClient {
     private static final String BASE_URL = "http://api.themoviedb.org/3/movie/";
     private static final String API_KEY_QUERY = "api_key";
 
-    /** This way to hide the API key when uploading the project to github found in:
+    /** The way to hide the API key when uploading the project to github found in:
      * https://richardroseblog.wordpress.com/2016/05/29/hiding-secret-api-keys-from-git/
      */
-    private static final String API_KEY = BuildConfig.API_KEY;;
+    private static final String API_KEY = BuildConfig.API_KEY;
     private static final String MOST_POPULAR_PATH = "popular";
     private static final String TOP_RATED_PATH = "top_rated";
     private static final String MOVIE_ID_PATH_MASK = "{movie_id}";

@@ -10,6 +10,7 @@
     <string name="error_server_status">HTTP Status code: </string>
     <string name="error_internet">Unable to establish connection.\n\n Please check your
         Cell/Wi-Fi signal and try again.</string>
+    <string name="error_empty_list">Unable to retrieve data.\n\n Please try again.</string>
 
     <string name="button_try_again">Retry</string>
 
