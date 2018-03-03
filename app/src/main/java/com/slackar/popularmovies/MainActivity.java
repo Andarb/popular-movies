@@ -16,8 +16,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.slackar.popularmovies.Utils.RetrofitClient;
-import com.slackar.popularmovies.data.MoviePoster;
-import com.slackar.popularmovies.data.MoviesList;
+import com.slackar.popularmovies.adapters.PosterAdapter;
+import com.slackar.popularmovies.data.Poster;
+import com.slackar.popularmovies.data.PosterList;
 
 import java.util.List;
 
@@ -47,8 +48,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @BindView(R.id.retry_button)
     Button mRetryButton;
 
-    private MoviePosterAdapter mMovieAdapter;
-    private List<MoviePoster> mMoviesList;
+    private PosterAdapter mMovieAdapter;
+    private List<Poster> mMoviesList;
 
     // Initiliazed to the default way of sorting movies
     private int mSortType = SORT_BY_POPULARITY;
@@ -66,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, nrOfGridColumns));
         mRecyclerView.setHasFixedSize(true);
 
-        mMovieAdapter = new MoviePosterAdapter(this);
+        mMovieAdapter = new PosterAdapter(this);
 
         retrievePosters();
     }
@@ -74,11 +75,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /* Download and parse a list of movies using Retrofit */
     private void retrievePosters() {
         mLoadingPB.setVisibility(View.VISIBLE);
-        Call<MoviesList> getCall = RetrofitClient.getPosters(mSortType);
+        Call<PosterList> getCall = RetrofitClient.getPosters(mSortType);
 
-        getCall.enqueue(new Callback<MoviesList>() {
+        getCall.enqueue(new Callback<PosterList>() {
             @Override
-            public void onResponse(Call<MoviesList> call, Response<MoviesList> response) {
+            public void onResponse(Call<PosterList> call, Response<PosterList> response) {
                 if (response.isSuccessful()) {
                     hideErrorMessage();
                     mMoviesList = response.body().getResults();
@@ -104,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
 
             @Override
-            public void onFailure(Call<MoviesList> call, Throwable t) {
+            public void onFailure(Call<PosterList> call, Throwable t) {
                 showErrorMessage(getString(R.string.error_internet));
             }
         });

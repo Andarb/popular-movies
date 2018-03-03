@@ -1,4 +1,4 @@
-package com.slackar.popularmovies;
+package com.slackar.popularmovies.adapters;
 
 
 import android.content.Context;
@@ -9,7 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.slackar.popularmovies.data.MoviePoster;
+import com.slackar.popularmovies.MovieDetailsActivity;
+import com.slackar.popularmovies.R;
+import com.slackar.popularmovies.data.Poster;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -17,17 +19,17 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.PosterViewHolder> {
+public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterViewHolder> {
 
     private final Context mContext;
-    private List<MoviePoster> mMovies;
+    private List<Poster> mMovies;
 
     // Poster url details
     private static final String BASE_URL = "http://image.tmdb.org/t/p/";
     private static final String POSTER_SIZE = "w185";
     private static final String POSTER_URL = BASE_URL + POSTER_SIZE;
 
-    public MoviePosterAdapter(Context context) {
+    public PosterAdapter(Context context) {
         mContext = context;
     }
 
@@ -82,7 +84,7 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
 
     /* Sets a list of movies (retrieved and parsed earlier from 'themoviedb')
      to be used by adapter  */
-    public void setMovies(List<MoviePoster> movies) {
+    public void setMovies(List<Poster> movies) {
         mMovies = movies;
     }
 }

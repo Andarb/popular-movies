@@ -3,7 +3,7 @@ package com.slackar.popularmovies.data;
 import com.google.gson.annotations.SerializedName;
 
 /* Movie poster and accompanying ID retrieved from themoviedb JSON */
-public class MoviePoster {
+public class Poster {
     @SerializedName("poster_path")
     private String posterPath;
 

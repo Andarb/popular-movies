@@ -4,7 +4,7 @@ package com.slackar.popularmovies.Utils;
 import com.slackar.popularmovies.BuildConfig;
 import com.slackar.popularmovies.MainActivity;
 import com.slackar.popularmovies.data.Movie;
-import com.slackar.popularmovies.data.MoviesList;
+import com.slackar.popularmovies.data.PosterList;
 
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -30,10 +30,10 @@ public final class RetrofitClient {
     /* Retrofit interface to get popular or highest rated movies */
     private interface SortedMovieApi {
         @GET(MOST_POPULAR_PATH)
-        Call<MoviesList> getPopular(@Query(API_KEY_QUERY) String apiKey);
+        Call<PosterList> getPopular(@Query(API_KEY_QUERY) String apiKey);
 
         @GET(TOP_RATED_PATH)
-        Call<MoviesList> getHighestRated(@Query(API_KEY_QUERY) String apiKey);
+        Call<PosterList> getHighestRated(@Query(API_KEY_QUERY) String apiKey);
 
         @GET(MOVIE_ID_PATH_MASK)
         Call<Movie> getMovieDetails(@Path(MOVIE_ID_PATH) String movieId, @Query(API_KEY_QUERY) String apiKey);
@@ -51,7 +51,7 @@ public final class RetrofitClient {
     }
 
     /* Retrieve posters for either most popular or highest rated movies */
-    public static Call<MoviesList> getPosters(int sortType) {
+    public static Call<PosterList> getPosters(int sortType) {
         SortedMovieApi apiService = setupRetrofit();
 
         switch (sortType) {
