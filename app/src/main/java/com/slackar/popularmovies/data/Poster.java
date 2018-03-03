@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 /* Movie poster and accompanying ID retrieved from themoviedb JSON */
 public class Poster {
+
     @SerializedName("poster_path")
     private String posterPath;
 

@@ -7,6 +7,7 @@ import java.util.List;
  * 'results' contains objects with details for each movie including poster URL
  **/
 public class PosterList {
+
     private List<Poster> results = null;
 
     public List<Poster> getResults() {

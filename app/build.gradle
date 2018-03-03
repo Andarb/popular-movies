@@ -10,7 +10,10 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
-        // This a the key used to access themoviedb API. You will need your own for this app to work.
+        /** This a unique API authorisation key used to access themoviedb API. It is stored
+         * in the `gradle.properties` file, which is not published to GitHub.
+         * You will need your own for this app to work.
+         */
         buildConfigField("String", "API_KEY", API_KEY)
     }
     buildTypes {

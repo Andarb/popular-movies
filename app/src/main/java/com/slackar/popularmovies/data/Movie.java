@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 /* Various movie details retrieved from themoviedb JSON */
 public class Movie {
+
     private String title;
 
     @SerializedName("release_date")
