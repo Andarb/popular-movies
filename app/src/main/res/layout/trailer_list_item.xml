@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/trailer_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/trailer_a11y"
+        tools:src="@drawable/trailer_example"
+        android:tint="#5F000000"/>
+
+    <ImageView
+        android:id="@+id/play_icon_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_play_circle_outline"
+        app:layout_constraintBottom_toBottomOf="@+id/trailer_iv"
+        app:layout_constraintEnd_toEndOf="@+id/trailer_iv"
+        app:layout_constraintStart_toStartOf="@+id/trailer_iv"
+        app:layout_constraintTop_toTopOf="@+id/trailer_iv"
+        android:contentDescription="@string/play_trailer_a11y"/>
+
+    <TextView
+        android:id="@+id/trailer_type_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:layout_marginEnd="8dp"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/trailer_iv"
+        app:layout_constraintEnd_toEndOf="@+id/trailer_iv"
+        tools:text="@string/toolstext_trailer_type"
+        android:layout_marginRight="8dp"
+        android:textColor="@android:color/white"/>
+
+    <TextView
+        android:id="@+id/trailer_name_tv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:textColor="@android:color/black"
+        app:layout_constraintEnd_toEndOf="@+id/trailer_iv"
+        app:layout_constraintStart_toStartOf="@+id/trailer_iv"
+        app:layout_constraintTop_toBottomOf="@+id/trailer_iv"
+        tools:text="@string/toolstext_trailer_name" />
+
+</android.support.constraint.ConstraintLayout>

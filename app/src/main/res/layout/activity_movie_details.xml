@@ -104,6 +104,15 @@
                 app:layout_constraintTop_toBottomOf="@+id/release_date_tv"
                 tools:text="@string/toolstext_overview" />
 
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/trailers_rv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/overview_tv" />
+
         </android.support.constraint.ConstraintLayout>
     </ScrollView>
 
