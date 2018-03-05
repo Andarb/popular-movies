@@ -3,16 +3,16 @@ package com.slackar.popularmovies.data;
 /* Movie trailer retrieved from themoviedb JSON */
 public class Trailer {
 
-    private String key;
+    private String source;
     private String name;
     private String type;
 
-    public String getKey() {
-        return key;
+    public String getSource() {
+        return source;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setSource(String source) {
+        this.source = source;
     }
 
     public String getName() {

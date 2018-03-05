@@ -2,7 +2,9 @@ package com.slackar.popularmovies.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,8 +27,11 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
     private List<Trailer> mTrailers;
 
     // Trailer thumbnail url details
-    private static final String BASE_URL = "http://img.youtube.com/vi/";
+    private static final String THUMBNAIL_BASE_URL = "http://img.youtube.com/vi/";
     private static final String THUMBNAIL_SIZE = "/mqdefault.jpg";
+
+    // Trailer video url
+    private static final String TRAILER_BASE_URL = "https://www.youtube.com/watch?v=";
 
     public TrailerAdapter(Context context) {
         mContext = context;
@@ -38,7 +43,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
         @BindView(R.id.trailer_type_tv)
         TextView trailerTypeTV;
         @BindView(R.id.trailer_name_tv)
-        ImageView trailerNameTV;
+        TextView trailerNameTV;
 
         /* Bind trailer Views, and set an OnClickListener on the list item */
         public TrailerViewHolder(View itemView) {
@@ -51,12 +56,15 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
         /* When one of the trailers is clicked, find an app to play it */
         @Override
         public void onClick(View view) {
-
-            // TO DO: ADD IMPLICIT INTENT
             int position = getAdapterPosition();
-            String trailerKey = mTrailers.get(position).getKey();
-            // TO DO: ADD IMPLICIT INTENT
+            String trailerKey = mTrailers.get(position).getSource();
 
+            Intent playTrailerIntent = new Intent(Intent.ACTION_VIEW,
+                    Uri.parse(TRAILER_BASE_URL + trailerKey));
+
+            if (playTrailerIntent.resolveActivity(mContext.getPackageManager()) != null) {
+                mContext.startActivity(playTrailerIntent);
+            }
         }
     }
 
@@ -72,9 +80,12 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
     /* Download trailer thumbnail and set it for the list item */
     @Override
     public void onBindViewHolder(TrailerAdapter.TrailerViewHolder holder, int position) {
-        String trailerUrlKey = mTrailers.get(position).getKey();
-        Picasso.with(mContext).load(BASE_URL + trailerUrlKey + THUMBNAIL_SIZE)
-                .into(holder.trailerIV);
+        String trailerUrlKey = mTrailers.get(position).getSource();
+        String thumbnailUrl = THUMBNAIL_BASE_URL + trailerUrlKey + THUMBNAIL_SIZE;
+
+        Picasso.with(mContext).load(thumbnailUrl).into(holder.trailerIV);
+        holder.trailerNameTV.setText(mTrailers.get(position).getName());
+        holder.trailerTypeTV.setText(mTrailers.get(position).getType());
     }
 
     /* Number of trailers retrieved for this movie */

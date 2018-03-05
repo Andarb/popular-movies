@@ -82,8 +82,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onResponse(Call<PosterList> call, Response<PosterList> response) {
                 if (response.isSuccessful()) {
                     hideErrorMessage();
+
                     mMoviesList = response.body().getResults();
-                    if (mMoviesList.isEmpty()) {
+                    if (mMoviesList == null) {
                         showErrorMessage(getString(R.string.error_empty_list));
                         return;
                     }

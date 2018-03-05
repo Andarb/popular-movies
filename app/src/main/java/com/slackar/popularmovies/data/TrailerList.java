@@ -1,5 +1,7 @@
 package com.slackar.popularmovies.data;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 /**
@@ -8,6 +10,7 @@ import java.util.List;
  **/
 public class TrailerList {
 
+    @SerializedName("youtube")
     private List<Trailer> results = null;
 
     public List<Trailer> getResults() {

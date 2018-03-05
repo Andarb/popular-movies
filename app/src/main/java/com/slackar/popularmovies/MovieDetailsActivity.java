@@ -2,6 +2,9 @@ package com.slackar.popularmovies;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +14,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.slackar.popularmovies.Utils.RetrofitClient;
+import com.slackar.popularmovies.adapters.PosterAdapter;
+import com.slackar.popularmovies.adapters.TrailerAdapter;
+import com.slackar.popularmovies.data.Trailer;
+import com.slackar.popularmovies.data.TrailerList;
 import com.squareup.picasso.Picasso;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -44,9 +53,11 @@ public class MovieDetailsActivity extends AppCompatActivity implements View.OnCl
     @BindView(R.id.overview_tv)
     TextView mOverviewTV;
 
-    // Loading indicator
+    // Loading indicators
     @BindView(R.id.details_loading_pb)
-    ProgressBar mLoadingPB;
+    ProgressBar mDetailsPB;
+    @BindView(R.id.trailers_loading_pb)
+    ProgressBar mTrailersPB;
 
     // Error message
     @BindView(R.id.error_message_details)
@@ -56,8 +67,15 @@ public class MovieDetailsActivity extends AppCompatActivity implements View.OnCl
     @BindView(R.id.retry_button)
     Button mRetryButton;
 
+    // RecyclerViews for trailers and reviews
+    @BindView(R.id.trailers_rv)
+    RecyclerView mTrailerRV;
+
     private com.slackar.popularmovies.data.Movie mMovie;
     private String mMovieId;
+
+    private TrailerAdapter mTrailerAdapter;
+    private List<Trailer> mTrailers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,13 +85,20 @@ public class MovieDetailsActivity extends AppCompatActivity implements View.OnCl
         ButterKnife.bind(this);
         mRetryButton.setOnClickListener(this);
 
+        // Set up recyclerview and adapter for movie trailers
+        mTrailerRV.setLayoutManager(new LinearLayoutManager(this,
+                LinearLayoutManager.HORIZONTAL, false));
+        mTrailerRV.setHasFixedSize(true);
+        mTrailerAdapter = new TrailerAdapter(this);
+
         mMovieId = getIntent().getStringExtra(MOVIE_ID_INTENT_KEY);
         retrieveMovieDetails();
+        retrieveTrailers();
     }
 
     /* Download and parse movie details using Retrofit */
     private void retrieveMovieDetails() {
-        mLoadingPB.setVisibility(View.VISIBLE);
+        mDetailsPB.setVisibility(View.VISIBLE);
         Call<com.slackar.popularmovies.data.Movie> getCall = RetrofitClient.getMovieDetails(mMovieId);
 
         getCall.enqueue(new Callback<com.slackar.popularmovies.data.Movie>() {
@@ -84,7 +109,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements View.OnCl
                     mMovie = response.body();
 
                     populateUI();
-                    mLoadingPB.setVisibility(View.GONE);
+                    mDetailsPB.setVisibility(View.GONE);
                 } else {
                     showErrorMessage(getString(R.string.error_server));
                     Log.w(TAG, getString(R.string.error_server_status) + response.code());
@@ -96,7 +121,40 @@ public class MovieDetailsActivity extends AppCompatActivity implements View.OnCl
                 showErrorMessage(getString(R.string.error_internet));
             }
         });
+    }
 
+    /* Download and parse trailer details using Retrofit */
+    private void retrieveTrailers() {
+        mTrailersPB.setVisibility(View.VISIBLE);
+        Call<TrailerList> getCall = RetrofitClient.getTrailers(mMovieId);
+
+        getCall.enqueue(new Callback<TrailerList>() {
+            @Override
+            public void onResponse(Call<TrailerList> call, Response<TrailerList> response) {
+                if (response.isSuccessful()) {
+                    hideErrorMessage();
+
+                    mTrailers = response.body().getResults();
+                    if (mTrailers == null) {
+                        showErrorMessage(getString(R.string.error_empty_list));
+                        return;
+                    }
+
+                    mTrailerAdapter.setTrailers(mTrailers);
+                    mTrailerRV.setAdapter(mTrailerAdapter);
+
+                    mTrailersPB.setVisibility(View.GONE);
+                } else {
+                    showErrorMessage(getString(R.string.error_server));
+                    Log.w(TAG, getString(R.string.error_server_status) + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<TrailerList> call, Throwable t) {
+                showErrorMessage(getString(R.string.error_internet));
+            }
+        });
     }
 
     /* Set all the movie details */
@@ -116,7 +174,8 @@ public class MovieDetailsActivity extends AppCompatActivity implements View.OnCl
 
     /* Shows the error message and hides everything else */
     private void showErrorMessage(String error) {
-        mLoadingPB.setVisibility(View.GONE);
+        mDetailsPB.setVisibility(View.GONE);
+        mTrailersPB.setVisibility(View.GONE);
         mMovieDetailsView.setVisibility(View.GONE);
         mErrorTV.setText(error);
         mErrorMessageView.setVisibility(View.VISIBLE);
@@ -126,5 +185,6 @@ public class MovieDetailsActivity extends AppCompatActivity implements View.OnCl
     @Override
     public void onClick(View v) {
         retrieveMovieDetails();
+        retrieveTrailers();
     }
 }

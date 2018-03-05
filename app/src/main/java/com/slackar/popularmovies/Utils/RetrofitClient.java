@@ -1,12 +1,16 @@
 package com.slackar.popularmovies.Utils;
 
 
+import android.util.Log;
+
 import com.slackar.popularmovies.BuildConfig;
 import com.slackar.popularmovies.MainActivity;
 import com.slackar.popularmovies.data.Movie;
 import com.slackar.popularmovies.data.PosterList;
 import com.slackar.popularmovies.data.Review;
+import com.slackar.popularmovies.data.ReviewList;
 import com.slackar.popularmovies.data.Trailer;
+import com.slackar.popularmovies.data.TrailerList;
 
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -45,10 +49,10 @@ public final class RetrofitClient {
         Call<Movie> getMovieDetails(@Path(MOVIE_ID_PATH) String movieId, @Query(API_KEY_QUERY) String apiKey);
 
         @GET(TRAILERS_PATH)
-        Call<Trailer> getTrailers(@Path(MOVIE_ID_PATH) String movieId, @Query(API_KEY_QUERY) String apiKey);
+        Call<TrailerList> getTrailers(@Path(MOVIE_ID_PATH) String movieId, @Query(API_KEY_QUERY) String apiKey);
 
         @GET(REVIEWS_PATH)
-        Call<Review> getReviews(@Path(MOVIE_ID_PATH) String movieId, @Query(API_KEY_QUERY) String apiKey);
+        Call<ReviewList> getReviews(@Path(MOVIE_ID_PATH) String movieId, @Query(API_KEY_QUERY) String apiKey);
     }
 
     /* Set up retrofit and its service */
@@ -84,14 +88,14 @@ public final class RetrofitClient {
     }
 
     /* Retrieve trailers of a specific movie */
-    public static Call<Trailer> getTrailers(String movieId) {
+    public static Call<TrailerList> getTrailers(String movieId) {
         MovieApi apiService = setupRetrofit();
 
         return apiService.getTrailers(movieId, API_KEY);
     }
 
     /* Retrieve reviews of a specific movie */
-    public static Call<Review> getReviews(String movieId) {
+    public static Call<ReviewList> getReviews(String movieId) {
         MovieApi apiService = setupRetrofit();
 
         return apiService.getReviews(movieId, API_KEY);
