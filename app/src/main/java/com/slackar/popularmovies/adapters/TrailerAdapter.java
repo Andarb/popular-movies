@@ -57,7 +57,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
         @Override
         public void onClick(View view) {
             int position = getAdapterPosition();
-            String trailerKey = mTrailers.get(position).getSource();
+            String trailerKey = mTrailers.get(position).getKey();
 
             Intent playTrailerIntent = new Intent(Intent.ACTION_VIEW,
                     Uri.parse(TRAILER_BASE_URL + trailerKey));
@@ -80,7 +80,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
     /* Download trailer thumbnail and set it for the list item */
     @Override
     public void onBindViewHolder(TrailerAdapter.TrailerViewHolder holder, int position) {
-        String trailerUrlKey = mTrailers.get(position).getSource();
+        String trailerUrlKey = mTrailers.get(position).getKey();
         String thumbnailUrl = THUMBNAIL_BASE_URL + trailerUrlKey + THUMBNAIL_SIZE;
 
         Picasso.with(mContext).load(thumbnailUrl).into(holder.trailerIV);

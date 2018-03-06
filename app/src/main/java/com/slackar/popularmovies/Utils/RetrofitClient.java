@@ -34,7 +34,7 @@ public final class RetrofitClient {
     // Paths used to retrieve most popular/highest rated movies, trailers and reviews
     private static final String MOST_POPULAR_PATH = "popular";
     private static final String TOP_RATED_PATH = "top_rated";
-    private static final String TRAILERS_PATH = MOVIE_ID_PATH_MASK + "/trailers";
+    private static final String TRAILERS_PATH = MOVIE_ID_PATH_MASK + "/videos";
     private static final String REVIEWS_PATH = MOVIE_ID_PATH_MASK + "/reviews";
 
     /* Retrofit interface for retrieving movies */
