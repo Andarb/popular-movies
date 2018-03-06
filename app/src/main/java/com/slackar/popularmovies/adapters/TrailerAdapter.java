@@ -77,7 +77,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
         return new TrailerAdapter.TrailerViewHolder(view);
     }
 
-    /* Download trailer thumbnail and set it for the list item */
+    /* Download trailer thumbnail, and set other details */
     @Override
     public void onBindViewHolder(TrailerAdapter.TrailerViewHolder holder, int position) {
         String trailerUrlKey = mTrailers.get(position).getKey();

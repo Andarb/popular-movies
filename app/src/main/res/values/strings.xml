@@ -5,6 +5,14 @@
     <string name="menu_most_popular">Sort by popularity</string>
     <string name="menu_highest_rated">Sort by rating</string>
 
+    <!--Toast message shown after movie sorting is changed-->
+    <string name="toast_most_popular">Most popular movies.</string>
+    <string name="toast_highest_rated">Highest rated movies.</string>
+
+    <!--Labels used in activity_movie_details.xml-->
+    <string name="release_date_label">Release Date</string>
+    <string name="vote_average_label">Average Rating</string>
+
     <!--Error messages when retrieving posters or movie details-->
     <string name="error_server">Unable to establish connection. Server maybe down.\n\n Please try again later.</string>
     <string name="error_server_status">HTTP Status code: </string>
@@ -18,14 +26,6 @@
     <!--Error messages for trailers and reviews-->
     <string name="error_trailers">No movie trailers found.</string>
     <string name="error_reviews">No movie reviews found.</string>
-
-    <!--Toast message shown after movie sorting is changed-->
-    <string name="toast_most_popular">Most popular movies.</string>
-    <string name="toast_highest_rated">Highest rated movies.</string>
-
-    <!--Labels used in activity_movie_details.xml-->
-    <string name="release_date_label">Release Date</string>
-    <string name="vote_average_label">Average Rating</string>
 
     <!--a11y used in activity_movie_details.xml and poster_grid_item.xml-->
     <string name="poster_a11y">Movie poster</string>
@@ -47,4 +47,11 @@
     <string name="toolstext_trailer_name" translatable="false">Ho Gaya Hai Tujhko To Pyar
         Sajna - song by CinePlusPlus</string>
     <string name="toolstext_trailer_type" translatable="false">Clip</string>
+
+    <!--tools:text used in review_list_item.xml-->
+    <string name="toolstext_review_author" translatable="false">MohamedElsharkawy</string>
+    <string name="toolstext_review_content" translatable="false">The Dilwale Dulhania Le Jayenge
+        is a film considered by most to be one of the greatest ever made. From The American Film
+        Institute to as voted by users on the Internet Movie Database (IMDB) it is consider to be
+        one of the best.</string>
 </resources>

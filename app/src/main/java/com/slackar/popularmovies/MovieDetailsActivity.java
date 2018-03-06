@@ -4,7 +4,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SnapHelper;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +17,10 @@ import android.widget.TextView;
 
 import com.slackar.popularmovies.Utils.RetrofitClient;
 import com.slackar.popularmovies.adapters.PosterAdapter;
+import com.slackar.popularmovies.adapters.ReviewAdapter;
 import com.slackar.popularmovies.adapters.TrailerAdapter;
+import com.slackar.popularmovies.data.Review;
+import com.slackar.popularmovies.data.ReviewList;
 import com.slackar.popularmovies.data.Trailer;
 import com.slackar.popularmovies.data.TrailerList;
 import com.squareup.picasso.Picasso;
@@ -39,6 +44,10 @@ public class MovieDetailsActivity extends AppCompatActivity implements View.OnCl
     private static final String BACKDROP_SIZE = "w342";
     private static final String BACKDROP_URL = BASE_URL + BACKDROP_SIZE;
 
+    // Loading indicator
+    @BindView(R.id.details_loading_pb)
+    ProgressBar mDetailsPB;
+
     // Movie details and labels
     @BindView(R.id.movie_details_view)
     ViewGroup mMovieDetailsView;
@@ -53,9 +62,11 @@ public class MovieDetailsActivity extends AppCompatActivity implements View.OnCl
     @BindView(R.id.overview_tv)
     TextView mOverviewTV;
 
-    // Loading indicator
-    @BindView(R.id.details_loading_pb)
-    ProgressBar mDetailsPB;
+    // RecyclerViews for trailers and reviews
+    @BindView(R.id.trailers_rv)
+    RecyclerView mTrailerRV;
+    @BindView(R.id.reviews_rv)
+    RecyclerView mReviewRV;
 
     // Connection error message
     @BindView(R.id.error_message_details)
@@ -65,19 +76,20 @@ public class MovieDetailsActivity extends AppCompatActivity implements View.OnCl
     @BindView(R.id.retry_button)
     Button mRetryButton;
 
-    // Missing trailers or reviews error messages
+    // Error messages for missing trailers/reviews
     @BindView(R.id.trailer_error_tv)
     TextView mTrailerErrorTV;
-
-    // RecyclerViews for trailers and reviews
-    @BindView(R.id.trailers_rv)
-    RecyclerView mTrailerRV;
+    @BindView(R.id.reviews_error_tv)
+    TextView mReviewErrorTV;
 
     private com.slackar.popularmovies.data.Movie mMovie;
     private String mMovieId;
 
     private TrailerAdapter mTrailerAdapter;
     private List<Trailer> mTrailers;
+
+    private ReviewAdapter mReviewAdapter;
+    private List<Review> mReviews;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,9 +105,17 @@ public class MovieDetailsActivity extends AppCompatActivity implements View.OnCl
         mTrailerRV.setHasFixedSize(true);
         mTrailerAdapter = new TrailerAdapter(this);
 
+        // Set up recyclerview and adapter for reviews
+        mReviewRV.setLayoutManager(new LinearLayoutManager(this,
+                LinearLayoutManager.HORIZONTAL, false));
+        SnapHelper helper = new LinearSnapHelper();
+        helper.attachToRecyclerView(mReviewRV);
+        mReviewAdapter = new ReviewAdapter(this);
+
         mMovieId = getIntent().getStringExtra(MOVIE_ID_INTENT_KEY);
         retrieveMovieDetails();
         retrieveTrailers();
+        retrieveReviews();
     }
 
     /* Download and parse movie details using Retrofit */
@@ -157,6 +177,37 @@ public class MovieDetailsActivity extends AppCompatActivity implements View.OnCl
         });
     }
 
+    /* Download and parse review details using Retrofit */
+    private void retrieveReviews() {
+        Call<ReviewList> getCall = RetrofitClient.getReviews(mMovieId);
+
+        getCall.enqueue(new Callback<ReviewList>() {
+            @Override
+            public void onResponse(Call<ReviewList> call, Response<ReviewList> response) {
+                if (response.isSuccessful()) {
+                    hideErrorMessage();
+
+                    mReviews = response.body().getResults();
+                    if (mReviews == null || mReviews.isEmpty()) {
+                        mReviewErrorTV.setVisibility(View.VISIBLE);
+                        return;
+                    }
+
+                    mReviewAdapter.setReviews(mReviews);
+                    mReviewRV.setAdapter(mReviewAdapter);
+                } else {
+                    showErrorMessage(getString(R.string.error_server));
+                    Log.w(TAG, getString(R.string.error_server_status) + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ReviewList> call, Throwable t) {
+                showErrorMessage(getString(R.string.error_internet));
+            }
+        });
+    }
+
     /* Set all the movie details */
     private void populateUI() {
         Picasso.with(this).load(BACKDROP_URL + mMovie.getBackdropPath()).into(mBackdropIV);
@@ -169,6 +220,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements View.OnCl
     /* Hides the error message and makes the movie details visible again */
     private void hideErrorMessage() {
         mTrailerErrorTV.setVisibility(View.GONE);
+        mReviewErrorTV.setVisibility(View.GONE);
         mErrorMessageView.setVisibility(View.GONE);
         mMovieDetailsView.setVisibility(View.VISIBLE);
     }
@@ -186,5 +238,6 @@ public class MovieDetailsActivity extends AppCompatActivity implements View.OnCl
     public void onClick(View v) {
         retrieveMovieDetails();
         retrieveTrailers();
+        retrieveReviews();
     }
 }
