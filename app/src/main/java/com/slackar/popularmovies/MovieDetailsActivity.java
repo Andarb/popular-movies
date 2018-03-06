@@ -53,19 +53,21 @@ public class MovieDetailsActivity extends AppCompatActivity implements View.OnCl
     @BindView(R.id.overview_tv)
     TextView mOverviewTV;
 
-    // Loading indicators
+    // Loading indicator
     @BindView(R.id.details_loading_pb)
     ProgressBar mDetailsPB;
-    @BindView(R.id.trailers_loading_pb)
-    ProgressBar mTrailersPB;
 
-    // Error message
+    // Connection error message
     @BindView(R.id.error_message_details)
     ViewGroup mErrorMessageView;
     @BindView(R.id.error_tv)
     TextView mErrorTV;
     @BindView(R.id.retry_button)
     Button mRetryButton;
+
+    // Missing trailers or reviews error messages
+    @BindView(R.id.trailer_error_tv)
+    TextView mTrailerErrorTV;
 
     // RecyclerViews for trailers and reviews
     @BindView(R.id.trailers_rv)
@@ -106,9 +108,10 @@ public class MovieDetailsActivity extends AppCompatActivity implements View.OnCl
             public void onResponse(Call<com.slackar.popularmovies.data.Movie> call, Response<com.slackar.popularmovies.data.Movie> response) {
                 if (response.isSuccessful()) {
                     hideErrorMessage();
-                    mMovie = response.body();
 
+                    mMovie = response.body();
                     populateUI();
+
                     mDetailsPB.setVisibility(View.GONE);
                 } else {
                     showErrorMessage(getString(R.string.error_server));
@@ -125,7 +128,6 @@ public class MovieDetailsActivity extends AppCompatActivity implements View.OnCl
 
     /* Download and parse trailer details using Retrofit */
     private void retrieveTrailers() {
-        mTrailersPB.setVisibility(View.VISIBLE);
         Call<TrailerList> getCall = RetrofitClient.getTrailers(mMovieId);
 
         getCall.enqueue(new Callback<TrailerList>() {
@@ -135,15 +137,13 @@ public class MovieDetailsActivity extends AppCompatActivity implements View.OnCl
                     hideErrorMessage();
 
                     mTrailers = response.body().getResults();
-                    if (mTrailers == null) {
-                        showErrorMessage(getString(R.string.error_empty_list));
+                    if (mTrailers == null || mTrailers.isEmpty()) {
+                        mTrailerErrorTV.setVisibility(View.VISIBLE);
                         return;
                     }
 
                     mTrailerAdapter.setTrailers(mTrailers);
                     mTrailerRV.setAdapter(mTrailerAdapter);
-
-                    mTrailersPB.setVisibility(View.GONE);
                 } else {
                     showErrorMessage(getString(R.string.error_server));
                     Log.w(TAG, getString(R.string.error_server_status) + response.code());
@@ -168,6 +168,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements View.OnCl
 
     /* Hides the error message and makes the movie details visible again */
     private void hideErrorMessage() {
+        mTrailerErrorTV.setVisibility(View.GONE);
         mErrorMessageView.setVisibility(View.GONE);
         mMovieDetailsView.setVisibility(View.VISIBLE);
     }
@@ -175,7 +176,6 @@ public class MovieDetailsActivity extends AppCompatActivity implements View.OnCl
     /* Shows the error message and hides everything else */
     private void showErrorMessage(String error) {
         mDetailsPB.setVisibility(View.GONE);
-        mTrailersPB.setVisibility(View.GONE);
         mMovieDetailsView.setVisibility(View.GONE);
         mErrorTV.setText(error);
         mErrorMessageView.setVisibility(View.VISIBLE);

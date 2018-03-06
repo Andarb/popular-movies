@@ -12,7 +12,12 @@
         Cell/Wi-Fi signal and try again.</string>
     <string name="error_empty_list">Unable to retrieve data.\n\n Please try again.</string>
 
+    <!--Button to retry connection to the server-->
     <string name="button_try_again">Retry</string>
+
+    <!--Error messages for trailers and reviews-->
+    <string name="error_trailers">No movie trailers found.</string>
+    <string name="error_reviews">No movie reviews found.</string>
 
     <!--Toast message shown after movie sorting is changed-->
     <string name="toast_most_popular">Most popular movies.</string>
