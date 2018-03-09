@@ -12,6 +12,9 @@
     <!--Labels used in activity_movie_details.xml-->
     <string name="release_date_label">Release Date</string>
     <string name="vote_average_label">Average Rating</string>
+    <string name="overview_label">Overview</string>
+    <string name="videos_label">Videos</string>
+    <string name="reviews_label">Reviews</string>
 
     <!--Error messages when retrieving posters or movie details-->
     <string name="error_server">Unable to establish connection. Server maybe down.\n\n Please try again later.</string>
@@ -27,8 +30,8 @@
     <string name="button_try_again">Retry</string>
 
     <!--Error messages for trailers and reviews-->
-    <string name="error_trailers">No movie trailers found.</string>
-    <string name="error_reviews">No movie reviews found.</string>
+    <string name="error_trailers">No videos found.</string>
+    <string name="error_reviews">No reviews found.</string>
 
     <!--a11y used in activity_movie_details.xml and poster_grid_item.xml-->
     <string name="poster_a11y">Movie poster</string>

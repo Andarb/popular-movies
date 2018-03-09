@@ -161,7 +161,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements View.OnCl
                         return;
                     }
 
-                    mTrailerErrorTV.setVisibility(View.INVISIBLE);
+                    mTrailerErrorTV.setVisibility(View.GONE);
                     mTrailerAdapter.setTrailers(mTrailers);
                     mTrailerRV.setAdapter(mTrailerAdapter);
                 } else {
@@ -192,7 +192,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements View.OnCl
                         return;
                     }
 
-                    mReviewErrorTV.setVisibility(View.INVISIBLE);
+                    mReviewErrorTV.setVisibility(View.GONE);
                     mReviewAdapter.setReviews(mReviews);
                     mReviewRV.setAdapter(mReviewAdapter);
                 } else {
