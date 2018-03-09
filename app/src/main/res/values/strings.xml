@@ -20,6 +20,9 @@
         Cell/Wi-Fi signal and try again.</string>
     <string name="error_empty_list">Unable to retrieve data.\n\n Please try again.</string>
 
+    <!--Message displayed to user when no movie release date or votes are found-->
+    <string name="error_missing_info">Unknown</string>
+
     <!--Button to retry connection to the server-->
     <string name="button_try_again">Retry</string>
 

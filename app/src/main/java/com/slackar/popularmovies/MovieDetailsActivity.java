@@ -154,14 +154,14 @@ public class MovieDetailsActivity extends AppCompatActivity implements View.OnCl
             @Override
             public void onResponse(Call<TrailerList> call, Response<TrailerList> response) {
                 if (response.isSuccessful()) {
-                    hideErrorMessage();
-
+                    // If no trailers are present, show a warning message
                     mTrailers = response.body().getResults();
                     if (mTrailers == null || mTrailers.isEmpty()) {
                         mTrailerErrorTV.setVisibility(View.VISIBLE);
                         return;
                     }
 
+                    mTrailerErrorTV.setVisibility(View.INVISIBLE);
                     mTrailerAdapter.setTrailers(mTrailers);
                     mTrailerRV.setAdapter(mTrailerAdapter);
                 } else {
@@ -185,14 +185,14 @@ public class MovieDetailsActivity extends AppCompatActivity implements View.OnCl
             @Override
             public void onResponse(Call<ReviewList> call, Response<ReviewList> response) {
                 if (response.isSuccessful()) {
-                    hideErrorMessage();
-
+                    // If no reviews are present, show a warning message
                     mReviews = response.body().getResults();
                     if (mReviews == null || mReviews.isEmpty()) {
                         mReviewErrorTV.setVisibility(View.VISIBLE);
                         return;
                     }
 
+                    mReviewErrorTV.setVisibility(View.INVISIBLE);
                     mReviewAdapter.setReviews(mReviews);
                     mReviewRV.setAdapter(mReviewAdapter);
                 } else {
@@ -212,15 +212,30 @@ public class MovieDetailsActivity extends AppCompatActivity implements View.OnCl
     private void populateUI() {
         Picasso.with(this).load(BACKDROP_URL + mMovie.getBackdropPath()).into(mBackdropIV);
         mTitleTV.setText(mMovie.getTitle());
-        mReleaseDateTV.setText(mMovie.getReleaseDate());
-        mVoteAverageTV.setText(String.valueOf(mMovie.getVoteAverage()));
+
+        // Check if the release date is missing
+        String releaseDate = mMovie.getReleaseDate();
+        if (releaseDate.isEmpty())
+        {
+            mReleaseDateTV.setText(getString(R.string.error_missing_info));
+        } else {
+            mReleaseDateTV.setText(releaseDate);
+        }
+
+        // Check if there are no votes
+        float voteAverage = mMovie.getVoteAverage();
+        if (voteAverage == 0)
+        {
+            mVoteAverageTV.setText(getString(R.string.error_missing_info));
+        } else {
+            mVoteAverageTV.setText(String.valueOf(voteAverage));
+        }
+
         mOverviewTV.setText(mMovie.getOverview());
     }
 
     /* Hides the error message and makes the movie details visible again */
     private void hideErrorMessage() {
-        mTrailerErrorTV.setVisibility(View.GONE);
-        mReviewErrorTV.setVisibility(View.GONE);
         mErrorMessageView.setVisibility(View.GONE);
         mMovieDetailsView.setVisibility(View.VISIBLE);
     }
