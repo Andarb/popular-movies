@@ -1,12 +1,15 @@
 package com.slackar.popularmovies;
 
+import android.animation.ObjectAnimator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSnapHelper;
+import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +18,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.slackar.popularmovies.Utils.RetrofitClient;
+import com.slackar.popularmovies.utils.RetrofitClient;
 import com.slackar.popularmovies.adapters.PosterAdapter;
 import com.slackar.popularmovies.adapters.ReviewAdapter;
 import com.slackar.popularmovies.adapters.TrailerAdapter;
@@ -108,14 +111,29 @@ public class MovieDetailsActivity extends AppCompatActivity implements View.OnCl
         // Set up recyclerview and adapter for reviews
         mReviewRV.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.HORIZONTAL, false));
-        SnapHelper helper = new LinearSnapHelper();
-        helper.attachToRecyclerView(mReviewRV);
+        SnapHelper snapHelper = new CustomPager();
+        snapHelper.attachToRecyclerView(mReviewRV);
         mReviewAdapter = new ReviewAdapter(this);
 
         mMovieId = getIntent().getStringExtra(MOVIE_ID_INTENT_KEY);
         retrieveMovieDetails();
         retrieveTrailers();
         retrieveReviews();
+    }
+
+    /* This will automatically collapse an expanded review when moving onto the next review */
+    public class CustomPager extends PagerSnapHelper {
+        @Override
+        public boolean onFling(int velocityX, int velocityY) {
+            if(!mReviewAdapter.isReviewCollapsed) {
+                TextView reviewTV = mReviewAdapter.getExpandedReview();
+                reviewTV.setMaxLines(4);
+                reviewTV.setEllipsize(TextUtils.TruncateAt.END);
+                mReviewAdapter.isReviewCollapsed = true;
+            }
+
+            return super.onFling(velocityX, velocityY);
+        }
     }
 
     /* Download and parse movie details using Retrofit */

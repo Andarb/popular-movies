@@ -20,6 +20,10 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
     private final Context mContext;
     private List<Review> mReviews;
 
+    // Used to collapse and expand a review
+    public static Boolean isReviewCollapsed = true;
+    private TextView mExpandedReviewTV;
+
     public ReviewAdapter(Context context) {
         mContext = context;
     }
@@ -30,7 +34,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
         @BindView(R.id.review_content_tv)
         TextView reviewContentTV;
 
-        Boolean isCollapsed = true;
+
 
         /* Bind review TextViews, and set an OnClickListener on the list item */
         public ReviewViewHolder(View itemView) {
@@ -40,17 +44,20 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
             itemView.setOnClickListener(this);
         }
 
-        /* When one of the reviews is clicked, open a browser to read it in full */
+        /* If there is a lot of text, expand or collapse content when the review is clicked */
         @Override
         public void onClick(View view) {
-            if (isCollapsed) {
+            if (reviewContentTV.getLineCount() < 4) return;
+
+            if (isReviewCollapsed) {
             reviewContentTV.setMaxLines(Integer.MAX_VALUE);
             reviewContentTV.setEllipsize(null);
-            isCollapsed = false;
+            isReviewCollapsed = false;
+            mExpandedReviewTV = reviewContentTV;
             } else {
                 reviewContentTV.setMaxLines(4);
                 reviewContentTV.setEllipsize(TextUtils.TruncateAt.END);
-                isCollapsed = true;
+                isReviewCollapsed = true;
             }
         }
     }
@@ -69,8 +76,6 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
     public void onBindViewHolder(ReviewAdapter.ReviewViewHolder holder, int position) {
         holder.reviewContentTV.setText(mReviews.get(position).getContent());
         holder.reviewAuthorTV.setText(mReviews.get(position).getAuthor());
-        holder.reviewContentTV.setMaxLines(4);
-        holder.reviewContentTV.setEllipsize(TextUtils.TruncateAt.END);
     }
 
     /* Number of reviews retrieved for this movie */
@@ -83,5 +88,16 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
      to be used by adapter */
     public void setReviews(List<Review> reviews) {
         mReviews = reviews;
+    }
+
+
+//    /* Returns true if review is collapsed. False if it is expanded */
+//    public Boolean isReviewCollapsed(){
+//        return isReviewCollapsed;
+//    }
+
+    /* Returns the review TextView that was clicked on and expanded by user */
+    public TextView getExpandedReview(){
+        return mExpandedReviewTV;
     }
 }

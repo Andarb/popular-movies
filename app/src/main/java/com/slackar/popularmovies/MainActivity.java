@@ -15,7 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.slackar.popularmovies.Utils.RetrofitClient;
+import com.slackar.popularmovies.utils.RetrofitClient;
 import com.slackar.popularmovies.adapters.PosterAdapter;
 import com.slackar.popularmovies.data.Poster;
 import com.slackar.popularmovies.data.PosterList;
