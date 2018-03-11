@@ -1,15 +1,11 @@
-package com.slackar.popularmovies.Utils;
+package com.slackar.popularmovies.utils;
 
-
-import android.util.Log;
 
 import com.slackar.popularmovies.BuildConfig;
 import com.slackar.popularmovies.MainActivity;
 import com.slackar.popularmovies.data.Movie;
 import com.slackar.popularmovies.data.PosterList;
-import com.slackar.popularmovies.data.Review;
 import com.slackar.popularmovies.data.ReviewList;
-import com.slackar.popularmovies.data.Trailer;
 import com.slackar.popularmovies.data.TrailerList;
 
 import retrofit2.Call;
