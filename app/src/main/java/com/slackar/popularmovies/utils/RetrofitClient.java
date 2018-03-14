@@ -5,8 +5,6 @@ import com.slackar.popularmovies.BuildConfig;
 import com.slackar.popularmovies.MainActivity;
 import com.slackar.popularmovies.data.Movie;
 import com.slackar.popularmovies.data.PosterList;
-import com.slackar.popularmovies.data.ReviewList;
-import com.slackar.popularmovies.data.TrailerList;
 
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -23,15 +21,17 @@ public final class RetrofitClient {
     private static final String API_KEY_QUERY = "api_key";
     private static final String API_KEY = BuildConfig.API_KEY;
 
-    // ID paths that help retrieve a specific movie
+    // ID paths that help retrieve details for a specific movie
     private static final String MOVIE_ID_PATH_MASK = "{movie_id}";
     private static final String MOVIE_ID_PATH = "movie_id";
+
+    // Append request for videos and reviews to the movie details query
+    private static final String APPEND_QUERY = "append_to_response";
+    private static final String VIDEOS_AND_REVIEWS = "videos,reviews";
 
     // Paths used to retrieve most popular/highest rated movies, trailers and reviews
     private static final String MOST_POPULAR_PATH = "popular";
     private static final String TOP_RATED_PATH = "top_rated";
-    private static final String TRAILERS_PATH = MOVIE_ID_PATH_MASK + "/videos";
-    private static final String REVIEWS_PATH = MOVIE_ID_PATH_MASK + "/reviews";
 
     /* Retrofit interface for retrieving movies */
     private interface MovieApi {
@@ -42,13 +42,9 @@ public final class RetrofitClient {
         Call<PosterList> getHighestRated(@Query(API_KEY_QUERY) String apiKey);
 
         @GET(MOVIE_ID_PATH_MASK)
-        Call<Movie> getMovieDetails(@Path(MOVIE_ID_PATH) String movieId, @Query(API_KEY_QUERY) String apiKey);
-
-        @GET(TRAILERS_PATH)
-        Call<TrailerList> getTrailers(@Path(MOVIE_ID_PATH) String movieId, @Query(API_KEY_QUERY) String apiKey);
-
-        @GET(REVIEWS_PATH)
-        Call<ReviewList> getReviews(@Path(MOVIE_ID_PATH) String movieId, @Query(API_KEY_QUERY) String apiKey);
+        Call<Movie> getMovieDetails(@Path(MOVIE_ID_PATH) String movieId,
+                                    @Query(API_KEY_QUERY) String apiKey,
+                                    @Query(APPEND_QUERY) String videosAndReviews);
     }
 
     /* Set up retrofit and its service */
@@ -80,20 +76,6 @@ public final class RetrofitClient {
     public static Call<Movie> getMovieDetails(String movieId) {
         MovieApi apiService = setupRetrofit();
 
-        return apiService.getMovieDetails(movieId, API_KEY);
-    }
-
-    /* Retrieve trailers of a specific movie */
-    public static Call<TrailerList> getTrailers(String movieId) {
-        MovieApi apiService = setupRetrofit();
-
-        return apiService.getTrailers(movieId, API_KEY);
-    }
-
-    /* Retrieve reviews of a specific movie */
-    public static Call<ReviewList> getReviews(String movieId) {
-        MovieApi apiService = setupRetrofit();
-
-        return apiService.getReviews(movieId, API_KEY);
+        return apiService.getMovieDetails(movieId, API_KEY, VIDEOS_AND_REVIEWS);
     }
 }

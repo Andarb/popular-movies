@@ -18,6 +18,9 @@ public class Movie {
     @SerializedName("vote_average")
     private float voteAverage;
 
+    private VideoList videos;
+    private ReviewList reviews;
+
 
     public String getTitle() {
         return title;
@@ -57,5 +60,21 @@ public class Movie {
 
     public void setVoteAverage(float voteAverage) {
         this.voteAverage = voteAverage;
+    }
+
+    public VideoList getVideos() {
+        return videos;
+    }
+
+    public void setVideos(VideoList videos) {
+        this.videos = videos;
+    }
+
+    public ReviewList getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(ReviewList reviews) {
+        this.reviews = reviews;
     }
 }

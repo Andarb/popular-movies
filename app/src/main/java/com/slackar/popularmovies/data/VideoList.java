@@ -4,17 +4,18 @@ import java.util.List;
 
 /**
  * themoviedb JSON returns an array of 'results'.
- * 'results' contains review objects
+ * 'results' contains video objects
  **/
-public class ReviewList {
+public class VideoList {
 
-    private List<Review> results = null;
+    private List<Video> results = null;
 
-    public List<Review> getResults() {
+    public List<Video> getResults() {
         return results;
     }
 
-    public void setResults(List<Review> results) {
+    public void setResults(List<Video> results) {
         this.results = results;
     }
+
 }

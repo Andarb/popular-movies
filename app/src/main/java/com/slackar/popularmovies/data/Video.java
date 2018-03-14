@@ -1,7 +1,7 @@
 package com.slackar.popularmovies.data;
 
-/* Movie trailer retrieved from themoviedb JSON */
-public class Trailer {
+/* Movie video retrieved from themoviedb JSON */
+public class Video {
 
     private String key;
     private String name;

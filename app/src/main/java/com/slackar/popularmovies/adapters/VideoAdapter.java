@@ -4,17 +4,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.slackar.popularmovies.MovieDetailsActivity;
 import com.slackar.popularmovies.R;
-import com.slackar.popularmovies.data.Poster;
-import com.slackar.popularmovies.data.Trailer;
+import com.slackar.popularmovies.data.Video;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -22,18 +19,18 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerViewHolder> {
+public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.TrailerViewHolder> {
     private final Context mContext;
-    private List<Trailer> mTrailers;
+    private List<Video> mVideos;
 
-    // Trailer thumbnail url details
+    // Video thumbnail url details
     private static final String THUMBNAIL_BASE_URL = "http://img.youtube.com/vi/";
     private static final String THUMBNAIL_SIZE = "/mqdefault.jpg";
 
-    // Trailer video url
+    // Video video url
     private static final String TRAILER_BASE_URL = "https://www.youtube.com/watch?v=";
 
-    public TrailerAdapter(Context context) {
+    public VideoAdapter(Context context) {
         mContext = context;
     }
 
@@ -57,7 +54,7 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
         @Override
         public void onClick(View view) {
             int position = getAdapterPosition();
-            String trailerKey = mTrailers.get(position).getKey();
+            String trailerKey = mVideos.get(position).getKey();
 
             Intent playTrailerIntent = new Intent(Intent.ACTION_VIEW,
                     Uri.parse(TRAILER_BASE_URL + trailerKey));
@@ -70,33 +67,33 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.TrailerV
 
     /* Inflate list item and intialize with it a new viewholder */
     @Override
-    public TrailerAdapter.TrailerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public VideoAdapter.TrailerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(mContext);
         View view = layoutInflater.inflate(R.layout.trailer_list_item, parent, false);
 
-        return new TrailerAdapter.TrailerViewHolder(view);
+        return new VideoAdapter.TrailerViewHolder(view);
     }
 
     /* Download trailer thumbnail, and set other details */
     @Override
-    public void onBindViewHolder(TrailerAdapter.TrailerViewHolder holder, int position) {
-        String trailerUrlKey = mTrailers.get(position).getKey();
+    public void onBindViewHolder(VideoAdapter.TrailerViewHolder holder, int position) {
+        String trailerUrlKey = mVideos.get(position).getKey();
         String thumbnailUrl = THUMBNAIL_BASE_URL + trailerUrlKey + THUMBNAIL_SIZE;
 
         Picasso.with(mContext).load(thumbnailUrl).into(holder.trailerIV);
-        holder.trailerNameTV.setText(mTrailers.get(position).getName());
-        holder.trailerTypeTV.setText(mTrailers.get(position).getType());
+        holder.trailerNameTV.setText(mVideos.get(position).getName());
+        holder.trailerTypeTV.setText(mVideos.get(position).getType());
     }
 
     /* Number of trailers retrieved for this movie */
     @Override
     public int getItemCount() {
-        return mTrailers.size();
+        return mVideos.size();
     }
 
-    /* Sets a list of trailers (retrieved and parsed earlier from 'themoviedb')
+    /* Sets a list of videos (retrieved and parsed earlier from 'themoviedb')
      to be used by adapter */
-    public void setTrailers(List<Trailer> trailers) {
-        mTrailers = trailers;
+    public void setVideos(List<Video> videos) {
+        mVideos = videos;
     }
 }

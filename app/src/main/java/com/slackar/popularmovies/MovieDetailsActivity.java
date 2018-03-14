@@ -1,18 +1,13 @@
 package com.slackar.popularmovies;
 
-import android.animation.ObjectAnimator;
-import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -20,14 +15,11 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.slackar.popularmovies.data.Video;
 import com.slackar.popularmovies.utils.RetrofitClient;
-import com.slackar.popularmovies.adapters.PosterAdapter;
 import com.slackar.popularmovies.adapters.ReviewAdapter;
-import com.slackar.popularmovies.adapters.TrailerAdapter;
+import com.slackar.popularmovies.adapters.VideoAdapter;
 import com.slackar.popularmovies.data.Review;
-import com.slackar.popularmovies.data.ReviewList;
-import com.slackar.popularmovies.data.Trailer;
-import com.slackar.popularmovies.data.TrailerList;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -90,8 +82,8 @@ public class MovieDetailsActivity extends AppCompatActivity implements View.OnCl
     private com.slackar.popularmovies.data.Movie mMovie;
     private String mMovieId;
 
-    private TrailerAdapter mTrailerAdapter;
-    private List<Trailer> mTrailers;
+    private VideoAdapter mTrailerAdapter;
+    private List<Video> mVideos;
 
     private ReviewAdapter mReviewAdapter;
     private List<Review> mReviews;
@@ -108,7 +100,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements View.OnCl
         mTrailerRV.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.HORIZONTAL, false));
         mTrailerRV.setHasFixedSize(true);
-        mTrailerAdapter = new TrailerAdapter(this);
+        mTrailerAdapter = new VideoAdapter(this);
 
         // Set up recyclerview and adapter for reviews
         mReviewRV.setLayoutManager(new LinearLayoutManager(this,
@@ -131,8 +123,6 @@ public class MovieDetailsActivity extends AppCompatActivity implements View.OnCl
 
         mMovieId = getIntent().getStringExtra(MOVIE_ID_INTENT_KEY);
         retrieveMovieDetails();
-        retrieveTrailers();
-        retrieveReviews();
     }
 
     /* Download and parse movie details using Retrofit */
@@ -147,7 +137,9 @@ public class MovieDetailsActivity extends AppCompatActivity implements View.OnCl
                     hideErrorMessage();
 
                     mMovie = response.body();
-                    populateUI();
+                    populateBasicDetails();
+                    retrieveVideos();
+                    retrieveReviews();
 
                     mDetailsPB.setVisibility(View.GONE);
                 } else {
@@ -163,70 +155,36 @@ public class MovieDetailsActivity extends AppCompatActivity implements View.OnCl
         });
     }
 
-    /* Download and parse trailer details using Retrofit */
-    private void retrieveTrailers() {
-        Call<TrailerList> getCall = RetrofitClient.getTrailers(mMovieId);
+    /* Set up video adapter if there any videos to show */
+    private void retrieveVideos() {
+        mVideos = mMovie.getVideos().getResults();
+        if (mVideos == null || mVideos.isEmpty()) {
+            // If no trailers are present, show a warning message and return
+            mTrailerErrorTV.setVisibility(View.VISIBLE);
+            return;
+        }
 
-        getCall.enqueue(new Callback<TrailerList>() {
-            @Override
-            public void onResponse(Call<TrailerList> call, Response<TrailerList> response) {
-                if (response.isSuccessful()) {
-                    // If no trailers are present, show a warning message
-                    mTrailers = response.body().getResults();
-                    if (mTrailers == null || mTrailers.isEmpty()) {
-                        mTrailerErrorTV.setVisibility(View.VISIBLE);
-                        return;
-                    }
-
-                    mTrailerErrorTV.setVisibility(View.GONE);
-                    mTrailerAdapter.setTrailers(mTrailers);
-                    mTrailerRV.setAdapter(mTrailerAdapter);
-                } else {
-                    showErrorMessage(getString(R.string.error_server));
-                    Log.w(TAG, getString(R.string.error_server_status) + response.code());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<TrailerList> call, Throwable t) {
-                showErrorMessage(getString(R.string.error_internet));
-            }
-        });
+        mTrailerErrorTV.setVisibility(View.GONE);
+        mTrailerAdapter.setVideos(mVideos);
+        mTrailerRV.setAdapter(mTrailerAdapter);
     }
 
-    /* Download and parse review details using Retrofit */
+    /* Set up review adapter if there any reviews to show */
     private void retrieveReviews() {
-        Call<ReviewList> getCall = RetrofitClient.getReviews(mMovieId);
+        mReviews = mMovie.getReviews().getResults();
+        if (mReviews == null || mReviews.isEmpty()) {
+            // If no reviews are present, show a warning message and return
+            mReviewErrorTV.setVisibility(View.VISIBLE);
+            return;
+        }
 
-        getCall.enqueue(new Callback<ReviewList>() {
-            @Override
-            public void onResponse(Call<ReviewList> call, Response<ReviewList> response) {
-                if (response.isSuccessful()) {
-                    // If no reviews are present, show a warning message
-                    mReviews = response.body().getResults();
-                    if (mReviews == null || mReviews.isEmpty()) {
-                        mReviewErrorTV.setVisibility(View.VISIBLE);
-                        return;
-                    }
-
-                    mReviewErrorTV.setVisibility(View.GONE);
-                    mReviewAdapter.setReviews(mReviews);
-                    mReviewRV.setAdapter(mReviewAdapter);
-                } else {
-                    showErrorMessage(getString(R.string.error_server));
-                    Log.w(TAG, getString(R.string.error_server_status) + response.code());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ReviewList> call, Throwable t) {
-                showErrorMessage(getString(R.string.error_internet));
-            }
-        });
+        mReviewErrorTV.setVisibility(View.GONE);
+        mReviewAdapter.setReviews(mReviews);
+        mReviewRV.setAdapter(mReviewAdapter);
     }
 
-    /* Set all the movie details */
-    private void populateUI() {
+    /* Set basic movie details */
+    private void populateBasicDetails() {
         Picasso.with(this).load(BACKDROP_URL + mMovie.getBackdropPath()).into(mBackdropIV);
         mTitleTV.setText(mMovie.getTitle());
 
@@ -249,13 +207,13 @@ public class MovieDetailsActivity extends AppCompatActivity implements View.OnCl
         mOverviewTV.setText(mMovie.getOverview());
     }
 
-    /* Hides the error message and makes the movie details visible again */
+    /* Hides the error message, and makes the movie details visible again */
     private void hideErrorMessage() {
         mErrorMessageView.setVisibility(View.GONE);
         mMovieDetailsView.setVisibility(View.VISIBLE);
     }
 
-    /* Shows the error message and hides everything else */
+    /* Shows the error message, and hides everything else */
     private void showErrorMessage(String error) {
         mDetailsPB.setVisibility(View.GONE);
         mMovieDetailsView.setVisibility(View.GONE);
@@ -263,11 +221,9 @@ public class MovieDetailsActivity extends AppCompatActivity implements View.OnCl
         mErrorMessageView.setVisibility(View.VISIBLE);
     }
 
-    /* Try to retrieve movie details again, when the 'Retry' button is clicked in the error message */
+    /* When the 'Retry' button in the error message is clicked, retry retrieving movies */
     @Override
     public void onClick(View v) {
         retrieveMovieDetails();
-        retrieveTrailers();
-        retrieveReviews();
     }
 }

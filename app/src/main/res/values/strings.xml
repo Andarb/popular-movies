@@ -29,7 +29,7 @@
     <!--Button to retry connection to the server-->
     <string name="button_try_again">Retry</string>
 
-    <!--Error messages for trailers and reviews-->
+    <!--Error messages videoslers reviewiews-->
     <string name="error_trailers">No videos found.</string>
     <string name="error_reviews">No reviews found.</string>
 
