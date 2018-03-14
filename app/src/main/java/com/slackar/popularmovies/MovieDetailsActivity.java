@@ -1,6 +1,7 @@
 package com.slackar.popularmovies;
 
 import android.animation.ObjectAnimator;
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -11,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -111,29 +113,26 @@ public class MovieDetailsActivity extends AppCompatActivity implements View.OnCl
         // Set up recyclerview and adapter for reviews
         mReviewRV.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.HORIZONTAL, false));
-        SnapHelper snapHelper = new CustomPager();
+        SnapHelper snapHelper = new PagerSnapHelper();
         snapHelper.attachToRecyclerView(mReviewRV);
+        mReviewRV.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                if (!mReviewAdapter.isReviewCollapsed) {
+                    TextView reviewTV = mReviewAdapter.getExpandedReview();
+                    reviewTV.setMaxLines(4);
+                    reviewTV.setEllipsize(TextUtils.TruncateAt.END);
+                    mReviewAdapter.isReviewCollapsed = true;
+                }
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+        });
         mReviewAdapter = new ReviewAdapter(this);
 
         mMovieId = getIntent().getStringExtra(MOVIE_ID_INTENT_KEY);
         retrieveMovieDetails();
         retrieveTrailers();
         retrieveReviews();
-    }
-
-    /* This will automatically collapse an expanded review when moving onto the next review */
-    public class CustomPager extends PagerSnapHelper {
-        @Override
-        public boolean onFling(int velocityX, int velocityY) {
-            if(!mReviewAdapter.isReviewCollapsed) {
-                TextView reviewTV = mReviewAdapter.getExpandedReview();
-                reviewTV.setMaxLines(4);
-                reviewTV.setEllipsize(TextUtils.TruncateAt.END);
-                mReviewAdapter.isReviewCollapsed = true;
-            }
-
-            return super.onFling(velocityX, velocityY);
-        }
     }
 
     /* Download and parse movie details using Retrofit */
@@ -233,8 +232,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements View.OnCl
 
         // Check if the release date is missing
         String releaseDate = mMovie.getReleaseDate();
-        if (releaseDate.isEmpty())
-        {
+        if (releaseDate.isEmpty()) {
             mReleaseDateTV.setText(getString(R.string.error_missing_info));
         } else {
             mReleaseDateTV.setText(releaseDate);
@@ -242,8 +240,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements View.OnCl
 
         // Check if there are no votes
         float voteAverage = mMovie.getVoteAverage();
-        if (voteAverage == 0)
-        {
+        if (voteAverage == 0) {
             mVoteAverageTV.setText(getString(R.string.error_missing_info));
         } else {
             mVoteAverageTV.setText(String.valueOf(voteAverage));
