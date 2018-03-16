@@ -6,7 +6,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +19,7 @@ import com.slackar.popularmovies.utils.RetrofitClient;
 import com.slackar.popularmovies.adapters.ReviewAdapter;
 import com.slackar.popularmovies.adapters.VideoAdapter;
 import com.slackar.popularmovies.data.Review;
+import com.slackar.popularmovies.utils.ReviewRecycler;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -63,7 +63,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements View.OnCl
     @BindView(R.id.trailers_rv)
     RecyclerView mTrailerRV;
     @BindView(R.id.reviews_rv)
-    RecyclerView mReviewRV;
+    ReviewRecycler mReviewRV;
 
     // Connection error message
     @BindView(R.id.error_message_details)
@@ -83,10 +83,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements View.OnCl
     private String mMovieId;
 
     private VideoAdapter mTrailerAdapter;
-    private List<Video> mVideos;
-
     private ReviewAdapter mReviewAdapter;
-    private List<Review> mReviews;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,18 +104,6 @@ public class MovieDetailsActivity extends AppCompatActivity implements View.OnCl
                 LinearLayoutManager.HORIZONTAL, false));
         SnapHelper snapHelper = new PagerSnapHelper();
         snapHelper.attachToRecyclerView(mReviewRV);
-        mReviewRV.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                if (!mReviewAdapter.isReviewCollapsed) {
-                    TextView reviewTV = mReviewAdapter.getExpandedReview();
-                    reviewTV.setMaxLines(4);
-                    reviewTV.setEllipsize(TextUtils.TruncateAt.END);
-                    mReviewAdapter.isReviewCollapsed = true;
-                }
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-        });
         mReviewAdapter = new ReviewAdapter(this);
 
         mMovieId = getIntent().getStringExtra(MOVIE_ID_INTENT_KEY);
@@ -157,29 +142,29 @@ public class MovieDetailsActivity extends AppCompatActivity implements View.OnCl
 
     /* Set up video adapter if there any videos to show */
     private void retrieveVideos() {
-        mVideos = mMovie.getVideos().getResults();
-        if (mVideos == null || mVideos.isEmpty()) {
+        List<Video> videos = mMovie.getVideos().getResults();
+        if (videos == null || videos.isEmpty()) {
             // If no trailers are present, show a warning message and return
             mTrailerErrorTV.setVisibility(View.VISIBLE);
             return;
         }
 
         mTrailerErrorTV.setVisibility(View.GONE);
-        mTrailerAdapter.setVideos(mVideos);
+        mTrailerAdapter.setVideos(videos);
         mTrailerRV.setAdapter(mTrailerAdapter);
     }
 
     /* Set up review adapter if there any reviews to show */
     private void retrieveReviews() {
-        mReviews = mMovie.getReviews().getResults();
-        if (mReviews == null || mReviews.isEmpty()) {
+        List<Review> reviews = mMovie.getReviews().getResults();
+        if (reviews == null || reviews.isEmpty()) {
             // If no reviews are present, show a warning message and return
             mReviewErrorTV.setVisibility(View.VISIBLE);
             return;
         }
 
         mReviewErrorTV.setVisibility(View.GONE);
-        mReviewAdapter.setReviews(mReviews);
+        mReviewAdapter.setReviews(reviews);
         mReviewRV.setAdapter(mReviewAdapter);
     }
 

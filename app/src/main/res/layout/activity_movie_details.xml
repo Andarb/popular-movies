@@ -197,7 +197,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/reviews_label_tv" />
 
-            <android.support.v7.widget.RecyclerView
+            <com.slackar.popularmovies.utils.ReviewRecycler
                 android:id="@+id/reviews_rv"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
