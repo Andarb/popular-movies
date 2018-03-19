@@ -11,7 +11,7 @@
         android:id="@+id/movie_details_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
@@ -29,20 +29,33 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:src="@drawable/backdrop_example" />
 
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/favorite_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"
+                android:src="@drawable/ic_favorite_border_white_24dp"
+                app:layout_constraintBottom_toBottomOf="@+id/backdrop_iv"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/backdrop_iv"
+                android:layout_marginRight="16dp" />
+
             <TextView
                 android:id="@+id/title_tv"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="24dp"
                 android:layout_marginStart="24dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="4dp"
                 android:gravity="center_horizontal"
                 android:textColor="@android:color/black"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/backdrop_iv"
+                app:layout_constraintTop_toBottomOf="@id/favorite_button"
                 tools:text="@string/toolstext_title" />
 
             <TextView
