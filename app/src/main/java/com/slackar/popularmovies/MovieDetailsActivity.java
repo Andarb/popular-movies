@@ -1,5 +1,6 @@
 package com.slackar.popularmovies;
 
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -30,7 +31,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MovieDetailsActivity extends AppCompatActivity implements View.OnClickListener {
+public class MovieDetailsActivity extends AppCompatActivity {
     private static final String TAG = MovieDetailsActivity.class.getSimpleName();
 
     // Key for the movie ID value passed with intent from MainActivity
@@ -41,9 +42,11 @@ public class MovieDetailsActivity extends AppCompatActivity implements View.OnCl
     private static final String BACKDROP_SIZE = "w342";
     private static final String BACKDROP_URL = BASE_URL + BACKDROP_SIZE;
 
-    // Loading indicator
+    // Loading indicator and floating action button
     @BindView(R.id.details_loading_pb)
     ProgressBar mDetailsPB;
+    @BindView(R.id.favorite_button)
+    FloatingActionButton mFavoriteButton;
 
     // Movie details and labels
     @BindView(R.id.movie_details_view)
@@ -89,9 +92,22 @@ public class MovieDetailsActivity extends AppCompatActivity implements View.OnCl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
-
         ButterKnife.bind(this);
-        mRetryButton.setOnClickListener(this);
+
+        // Set up button click listeners for `Retry` and `Favorite`
+        mRetryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // When there is a connection issue, retry retrieving movies
+                retrieveMovieDetails();
+            }
+        });
+        mFavoriteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                amendFavorites();
+            }
+        });
 
         // Set up recyclerview and adapter for movie trailers
         mTrailerRV.setLayoutManager(new LinearLayoutManager(this,
@@ -206,9 +222,9 @@ public class MovieDetailsActivity extends AppCompatActivity implements View.OnCl
         mErrorMessageView.setVisibility(View.VISIBLE);
     }
 
-    /* When the 'Retry' button in the error message is clicked, retry retrieving movies */
-    @Override
-    public void onClick(View v) {
-        retrieveMovieDetails();
+    /* Add or remove the movie from Favorites */
+    public void amendFavorites() {
+        // add code
+        mFavoriteButton.setImageResource(R.drawable.ic_favorite_white_24dp);
     }
 }

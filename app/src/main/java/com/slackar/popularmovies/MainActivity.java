@@ -28,7 +28,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     // IDs used to decide which sort order is required
@@ -58,9 +58,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         ButterKnife.bind(this);
-        mRetryButton.setOnClickListener(this);
+
+        // When there is a connection issue, retry retrieving posters
+        mRetryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                retrievePosters();
+            }
+        });
 
         // Set recyclerview to have grid layout with 2 columns
         int nrOfGridColumns = 2;
@@ -148,11 +154,5 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    /* Try to retrieve posters again, when the 'Retry' button is clicked in the error message */
-    @Override
-    public void onClick(View v) {
-        retrievePosters();
     }
 }
