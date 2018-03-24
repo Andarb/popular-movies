@@ -32,8 +32,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     // IDs used to decide which sort order is required
-    public static final int SORT_BY_POPULARITY = 101;
-    public static final int SORT_BY_RATING = 102;
+    public static final int SORT_BY_POPULARITY = 100;
+    public static final int SORT_BY_RATING = 101;
 
     @BindView(R.id.posters_rv)
     RecyclerView mRecyclerView;

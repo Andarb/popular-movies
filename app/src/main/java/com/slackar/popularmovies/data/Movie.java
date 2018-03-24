@@ -15,6 +15,9 @@ public class Movie {
     @SerializedName("backdrop_path")
     private String backdropPath;
 
+    @SerializedName("poster_path")
+    private String posterPath;
+
     @SerializedName("vote_average")
     private float voteAverage;
 
@@ -52,6 +55,14 @@ public class Movie {
 
     public void setBackdropPath(String backdropPath) {
         this.backdropPath = backdropPath;
+    }
+
+    public String getPosterPath() {
+        return posterPath;
+    }
+
+    public void setPosterPath(String posterPath) {
+        this.posterPath = posterPath;
     }
 
     public float getVoteAverage() {

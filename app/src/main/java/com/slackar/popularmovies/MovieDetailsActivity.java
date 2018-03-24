@@ -1,5 +1,10 @@
 package com.slackar.popularmovies;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,7 +19,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.slackar.popularmovies.data.FavoritesContract;
 import com.slackar.popularmovies.data.Video;
 import com.slackar.popularmovies.utils.RetrofitClient;
 import com.slackar.popularmovies.adapters.ReviewAdapter;
@@ -88,13 +95,23 @@ public class MovieDetailsActivity extends AppCompatActivity {
     private VideoAdapter mTrailerAdapter;
     private ReviewAdapter mReviewAdapter;
 
+    private ContentResolver mContentResolver;
+    private boolean mIsFavorite;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
         ButterKnife.bind(this);
 
-        // Set up button click listeners for `Retry` and `Favorite`
+        mMovieId = getIntent().getStringExtra(MOVIE_ID_INTENT_KEY);
+
+        // Check if the movie was favorited
+        mContentResolver = getContentResolver();
+        new CheckIfFavoriteTask().execute();
+
+        // Set up button click listeners for `Retry` and `Favorite` buttons
         mRetryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -122,7 +139,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
         snapHelper.attachToRecyclerView(mReviewRV);
         mReviewAdapter = new ReviewAdapter(this);
 
-        mMovieId = getIntent().getStringExtra(MOVIE_ID_INTENT_KEY);
         retrieveMovieDetails();
     }
 
@@ -133,7 +149,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
         getCall.enqueue(new Callback<com.slackar.popularmovies.data.Movie>() {
             @Override
-            public void onResponse(Call<com.slackar.popularmovies.data.Movie> call, Response<com.slackar.popularmovies.data.Movie> response) {
+            public void onResponse(Call<com.slackar.popularmovies.data.Movie> call,
+                                   Response<com.slackar.popularmovies.data.Movie> response) {
                 if (response.isSuccessful()) {
                     hideErrorMessage();
 
@@ -222,9 +239,71 @@ public class MovieDetailsActivity extends AppCompatActivity {
         mErrorMessageView.setVisibility(View.VISIBLE);
     }
 
-    /* Add or remove the movie from Favorites */
+    /* Add or remove the movie from Favorites using content provider */
     public void amendFavorites() {
-        // add code
-        mFavoriteButton.setImageResource(R.drawable.ic_favorite_white_24dp);
+        if (mIsFavorite) {
+            String selection = FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID + " = ?";
+            String[] selectionArgs = new String[]{mMovieId};
+
+            int deletedRows = mContentResolver.delete(FavoritesContract.FavoritesEntry.CONTENT_URI,
+                    selection,
+                    selectionArgs);
+
+            if (deletedRows < 1) {
+                Toast.makeText(this,
+                        getString(R.string.error_remove_favorite), Toast.LENGTH_LONG).show();
+            } else {
+                mFavoriteButton.setImageResource(R.drawable.ic_favorite_border_white_24dp);
+                mIsFavorite = false;
+            }
+
+        } else {
+            ContentValues movieCV = new ContentValues();
+            movieCV.put(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID, mMovieId);
+            movieCV.put(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_TITLE, mMovie.getTitle());
+            movieCV.put(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_POSTER_PATH, mMovie.getPosterPath());
+
+            Uri insertedRowUri = mContentResolver.insert(FavoritesContract.FavoritesEntry.CONTENT_URI, movieCV);
+
+            if (Uri.EMPTY.equals(insertedRowUri)) {
+                Toast.makeText(this,
+                        getString(R.string.error_add_favorite), Toast.LENGTH_LONG).show();
+            } else {
+                mFavoriteButton.setImageResource(R.drawable.ic_favorite_white_24dp);
+                mIsFavorite = true;
+            }
+        }
+    }
+
+    /* Check database for movie's ID. If it exists, change `Favorite` button icon to indicate that */
+    private class CheckIfFavoriteTask extends AsyncTask<Void, Void, Boolean> {
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            String[] projection = {FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID};
+            String selection = FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID + " = ?";
+            String[] selectionArgs = new String[]{mMovieId};
+
+            Cursor cursor = mContentResolver.query(FavoritesContract.FavoritesEntry.CONTENT_URI,
+                    projection,
+                    selection,
+                    selectionArgs,
+                    null);
+
+            if (cursor == null || cursor.getCount() == 0) {
+                mIsFavorite = false;
+            } else {
+                cursor.close();
+                mIsFavorite = true;
+            }
+            return mIsFavorite;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean isFavorite) {
+            // Set `Favorite` icon from a heart outline to filled heart, indicating a favorited movie
+            if (isFavorite) mFavoriteButton.setImageResource(R.drawable.ic_favorite_white_24dp);
+
+            mFavoriteButton.setVisibility(View.VISIBLE);
+        }
     }
 }

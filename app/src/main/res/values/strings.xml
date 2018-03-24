@@ -16,12 +16,14 @@
     <string name="videos_label">Videos</string>
     <string name="reviews_label">Reviews</string>
 
-    <!--Error messages when retrieving posters or movie details-->
+    <!--Error messages when retrieving posters, movie details or favorites-->
     <string name="error_server">Unable to establish connection. Server maybe down.\n\n Please try again later.</string>
     <string name="error_server_status">HTTP Status code: </string>
     <string name="error_internet">Unable to establish connection.\n\n Please check your
         Cell/Wi-Fi signal and try again.</string>
     <string name="error_empty_list">Unable to retrieve data.\n\n Please try again.</string>
+    <string name="error_remove_favorite">Removing from favorites failed. Try again.</string>
+    <string name="error_add_favorite">Adding to favorites failed. Try again.</string>
 
     <!--Message displayed to user when no movie release date or votes are found-->
     <string name="error_missing_info">Unknown</string>
