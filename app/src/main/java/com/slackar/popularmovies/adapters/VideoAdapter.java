@@ -37,8 +37,6 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.TrailerViewH
     class TrailerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @BindView(R.id.trailer_iv)
         ImageView trailerIV;
-        @BindView(R.id.trailer_type_tv)
-        TextView trailerTypeTV;
         @BindView(R.id.trailer_name_tv)
         TextView trailerNameTV;
 
@@ -82,7 +80,6 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.TrailerViewH
 
         Picasso.with(mContext).load(thumbnailUrl).into(holder.trailerIV);
         holder.trailerNameTV.setText(mVideos.get(position).getName());
-        holder.trailerTypeTV.setText(mVideos.get(position).getType());
     }
 
     /* Number of trailers retrieved for this movie */

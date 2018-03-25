@@ -54,7 +54,6 @@
     <!--tools:text used in trailer_list_item.xml-->
     <string name="toolstext_trailer_name" translatable="false">Ho Gaya Hai Tujhko To Pyar
         Sajna - song by CinePlusPlus</string>
-    <string name="toolstext_trailer_type" translatable="false">Clip</string>
 
     <!--tools:text used in review_list_item.xml-->
     <string name="toolstext_review_author" translatable="false">MohamedElsharkawy</string>

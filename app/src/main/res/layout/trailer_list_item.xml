@@ -21,25 +21,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/play_trailer_a11y"
-        android:src="@drawable/ic_play_circle_outline_white_24dp"
+        android:src="@drawable/ic_play_circle_outline_white_18dp"
         app:layout_constraintBottom_toBottomOf="@+id/trailer_iv"
         app:layout_constraintEnd_toEndOf="@+id/trailer_iv"
         app:layout_constraintStart_toStartOf="@+id/trailer_iv"
         app:layout_constraintTop_toTopOf="@+id/trailer_iv" />
-
-    <TextView
-        android:id="@+id/trailer_type_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="2dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginRight="8dp"
-        android:textColor="#E0E0E0"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/trailer_iv"
-        app:layout_constraintEnd_toEndOf="@+id/trailer_iv"
-        tools:text="@string/toolstext_trailer_type" />
 
     <TextView
         android:id="@+id/trailer_name_tv"

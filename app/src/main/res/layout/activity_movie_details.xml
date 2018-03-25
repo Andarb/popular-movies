@@ -5,7 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.slackar.popularmovies.MovieDetailsActivity">
+    tools:context="com.slackar.popularmovies.MovieDetailsActivity"
+    android:background="#f5f5f5">
 
     <ScrollView
         android:id="@+id/movie_details_view"
@@ -21,6 +22,7 @@
                 android:id="@+id/backdrop_iv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:minHeight="192dp"
                 android:adjustViewBounds="true"
                 android:contentDescription="@string/backdrop_a11y"
                 android:scaleType="centerCrop"

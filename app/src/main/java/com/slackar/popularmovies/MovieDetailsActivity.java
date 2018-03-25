@@ -203,7 +203,10 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
     /* Set basic movie details */
     private void populateBasicDetails() {
-        Picasso.with(this).load(BACKDROP_URL + mMovie.getBackdropPath()).into(mBackdropIV);
+        Picasso.with(this).load(BACKDROP_URL + mMovie.getBackdropPath())
+                .error(R.drawable.ic_broken_backdrop_image_24dp)
+                .into(mBackdropIV);
+
         mTitleTV.setText(mMovie.getTitle());
 
         // Check if the release date is missing
@@ -289,12 +292,17 @@ public class MovieDetailsActivity extends AppCompatActivity {
                     selectionArgs,
                     null);
 
-            if (cursor == null || cursor.getCount() == 0) {
-                mIsFavorite = false;
-            } else {
+            try {
+                if (cursor.getCount() == 0) {
+                    mIsFavorite = false;
+                } else {
+                    mIsFavorite = true;
+                }
                 cursor.close();
-                mIsFavorite = true;
+            } catch (NullPointerException e) {
+                mIsFavorite = false;
             }
+
             return mIsFavorite;
         }
 

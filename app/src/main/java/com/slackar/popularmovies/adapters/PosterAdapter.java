@@ -73,7 +73,10 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterView
     @Override
     public void onBindViewHolder(PosterViewHolder holder, int position) {
         String posterFileName = mMovies.get(position).getPosterPath();
-        Picasso.with(mContext).load(POSTER_URL + posterFileName).into(holder.listItemPoster);
+
+        Picasso.with(mContext).load(POSTER_URL + posterFileName)
+                .error(R.drawable.ic_broken_poster_image_24dp)
+                .into(holder.listItemPoster);
     }
 
     /* Number of movies retrieved from 'themoviedb' */
