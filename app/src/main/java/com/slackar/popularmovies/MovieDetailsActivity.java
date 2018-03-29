@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.slackar.popularmovies.data.FavoritesContract;
 import com.slackar.popularmovies.data.Video;
+import com.slackar.popularmovies.utils.FavoritesPoster;
 import com.slackar.popularmovies.utils.RetrofitClient;
 import com.slackar.popularmovies.adapters.ReviewAdapter;
 import com.slackar.popularmovies.adapters.VideoAdapter;
@@ -245,6 +246,12 @@ public class MovieDetailsActivity extends AppCompatActivity {
     /* Add or remove the movie from Favorites using content provider */
     public void amendFavorites() {
         if (mIsFavorite) {
+            if (!(FavoritesPoster.deleteImage(this, mMovieId))) {
+                Toast.makeText(this,
+                        getString(R.string.error_remove_favorite), Toast.LENGTH_LONG).show();
+                return;
+            }
+
             String selection = FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID + " = ?";
             String[] selectionArgs = new String[]{mMovieId};
 
@@ -261,10 +268,16 @@ public class MovieDetailsActivity extends AppCompatActivity {
             }
 
         } else {
+            if (!(FavoritesPoster.saveImage(this, mMovieId, mMovie.getPosterPath()))) {
+                Toast.makeText(this,
+                        getString(R.string.error_remove_favorite), Toast.LENGTH_LONG).show();
+                return;
+            }
+
             ContentValues movieCV = new ContentValues();
             movieCV.put(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID, mMovieId);
             movieCV.put(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_TITLE, mMovie.getTitle());
-            movieCV.put(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_POSTER_PATH, mMovie.getPosterPath());
+            movieCV.put(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_POSTER_PATH, getFilesDir().getAbsolutePath() + mMovieId);
 
             Uri insertedRowUri = mContentResolver.insert(FavoritesContract.FavoritesEntry.CONTENT_URI, movieCV);
 
