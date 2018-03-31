@@ -1,5 +1,6 @@
 package com.slackar.popularmovies;
 
+import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -15,6 +16,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.slackar.popularmovies.adapters.FavoritesAdapter;
+import com.slackar.popularmovies.data.FavoritesContract;
 import com.slackar.popularmovies.utils.RetrofitClient;
 import com.slackar.popularmovies.adapters.PosterAdapter;
 import com.slackar.popularmovies.data.Poster;
@@ -118,6 +121,38 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /* Retrieve a list of favorite movies from local db */
+    private void retrieveFavorites() {
+        hideErrorMessage();
+        mLoadingPB.setVisibility(View.VISIBLE);
+
+        String[] projection = { FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID,
+                FavoritesContract.FavoritesEntry.COLUMN_MOVIE_POSTER_PATH};
+
+        Cursor cursor = getContentResolver().query(FavoritesContract.FavoritesEntry.CONTENT_URI,
+                projection,
+                null,
+                null,
+                null);
+
+
+
+        try {
+            if (cursor.getCount() != 0) {
+                FavoritesAdapter favoritesAdapter = new FavoritesAdapter(this, cursor);
+                mRecyclerView.setAdapter(favoritesAdapter);
+            } else
+            {
+                showErrorMessage(getString(R.string.error_empty_favorites));
+            }
+        } catch (NullPointerException e) {
+              showErrorMessage(getString(R.string.error_empty_favorites));
+        }
+
+
+        mLoadingPB.setVisibility(View.GONE);
+    }
+
     /* Hides the error message and makes the posters visible again */
     private void hideErrorMessage() {
         mErrorMessageView.setVisibility(View.GONE);
@@ -150,6 +185,9 @@ public class MainActivity extends AppCompatActivity {
             case R.id.highest_rated:
                 mSortType = SORT_BY_RATING;
                 retrievePosters();
+                return true;
+            case R.id.favorites:
+                retrieveFavorites();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

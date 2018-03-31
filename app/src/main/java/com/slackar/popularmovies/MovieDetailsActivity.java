@@ -21,6 +21,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.slackar.popularmovies.adapters.PosterAdapter;
 import com.slackar.popularmovies.data.FavoritesContract;
 import com.slackar.popularmovies.data.Video;
 import com.slackar.popularmovies.utils.FavoritesPoster;
@@ -48,7 +49,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
     // Backdrop url details
     private static final String BASE_URL = "http://image.tmdb.org/t/p/";
     private static final String BACKDROP_SIZE = "w342";
-    private static final String BACKDROP_URL = BASE_URL + BACKDROP_SIZE;
+    private static final String BACKDROP_BASE_URL = BASE_URL + BACKDROP_SIZE;
 
     // Loading indicator and floating action button
     @BindView(R.id.details_loading_pb)
@@ -204,7 +205,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
     /* Set basic movie details */
     private void populateBasicDetails() {
-        Picasso.with(this).load(BACKDROP_URL + mMovie.getBackdropPath())
+        Picasso.with(this).load(BACKDROP_BASE_URL + mMovie.getBackdropPath())
                 .error(R.drawable.ic_broken_backdrop_image_24dp)
                 .into(mBackdropIV);
 
@@ -243,15 +244,17 @@ public class MovieDetailsActivity extends AppCompatActivity {
         mErrorMessageView.setVisibility(View.VISIBLE);
     }
 
-    /* Add or remove the movie from Favorites using content provider */
+    /* Add or remove the movie from `Favorites` using content provider */
     public void amendFavorites() {
         if (mIsFavorite) {
+            // Remove movie poster from internal storage
             if (!(FavoritesPoster.deleteImage(this, mMovieId))) {
                 Toast.makeText(this,
                         getString(R.string.error_remove_favorite), Toast.LENGTH_LONG).show();
                 return;
             }
 
+            // Remove movie details from `Favorites` db
             String selection = FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID + " = ?";
             String[] selectionArgs = new String[]{mMovieId};
 
@@ -268,12 +271,16 @@ public class MovieDetailsActivity extends AppCompatActivity {
             }
 
         } else {
-            if (!(FavoritesPoster.saveImage(this, mMovieId, mMovie.getPosterPath()))) {
+            // Save movie poster to internal memory
+            String posterImageUrl = PosterAdapter.POSTER_BASE_URL + mMovie.getPosterPath();
+
+            if (!(FavoritesPoster.saveImage(this, mMovieId, posterImageUrl))) {
                 Toast.makeText(this,
-                        getString(R.string.error_remove_favorite), Toast.LENGTH_LONG).show();
+                        getString(R.string.error_add_favorite), Toast.LENGTH_LONG).show();
                 return;
             }
 
+            // Add movie details to `Favorites` db
             ContentValues movieCV = new ContentValues();
             movieCV.put(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID, mMovieId);
             movieCV.put(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_TITLE, mMovie.getTitle());

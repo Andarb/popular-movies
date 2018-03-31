@@ -4,6 +4,7 @@
     <!--Used in overflow menu to sort movie posters in various ways-->
     <string name="menu_most_popular">Sort by popularity</string>
     <string name="menu_highest_rated">Sort by rating</string>
+    <string name="menu_favorites">Show favorites</string>
 
     <!--Toast message shown after movie sorting is changed-->
     <string name="toast_most_popular">Most popular movies.</string>
@@ -21,9 +22,10 @@
     <string name="error_server_status">HTTP Status code: </string>
     <string name="error_internet">Unable to establish connection.\n\n Please check your
         Cell/Wi-Fi signal and try again.</string>
-    <string name="error_empty_list">Unable to retrieve data.\n\n Please try again.</string>
+    <string name="error_empty_list">Unable to retrieve movies.\n\n Please try again.</string>
     <string name="error_remove_favorite">Removing from favorites failed. Try again.</string>
     <string name="error_add_favorite">Adding to favorites failed. Try again.</string>
+    <string name="error_empty_favorites">No favorites found.</string>
 
     <!--Message displayed to user when no movie release date or votes are found-->
     <string name="error_missing_info">Unknown</string>

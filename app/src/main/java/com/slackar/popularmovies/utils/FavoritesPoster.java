@@ -44,10 +44,10 @@ public final class FavoritesPoster {
     }
 
     /* Saves a downloaded poster to internal storage */
-    public static boolean saveImage(final Context context, final String filename, String posterPath) {
+    public static boolean saveImage(final Context context, final String filename, String imageUrl) {
         mSaveSuccessful = true;
 
-        // Override Picasso's target to save the image to disk instead of binding to ImageView
+        // Override Picasso's `Target` to save the image to disk instead of binding to ImageView
         mTarget = new Target() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
@@ -82,7 +82,7 @@ public final class FavoritesPoster {
 
         // Download and save the image
         Picasso.with(context)
-                .load("http://image.tmdb.org/t/p/w185/nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg")
+                .load(imageUrl)
                 .into(mTarget);
 
         return mSaveSuccessful;
@@ -93,6 +93,4 @@ public final class FavoritesPoster {
     {
         return context.deleteFile(posterFile);
     }
-
-
 }
