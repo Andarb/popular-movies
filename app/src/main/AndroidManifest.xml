@@ -19,7 +19,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.github.andarb.popularmovies.MovieDetailsActivity" />
+        <activity
+            android:name="com.github.andarb.popularmovies.MovieDetailsActivity"
+            android:parentActivityName="com.github.andarb.popularmovies.MainActivity">
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.github.andarb.popularmovies.MainActivity" />
+
+        </activity>
         
         <provider
             android:authorities="com.slackar.popularmovies"

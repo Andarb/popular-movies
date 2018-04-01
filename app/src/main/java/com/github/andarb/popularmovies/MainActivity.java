@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
         hideErrorMessage();
         mLoadingPB.setVisibility(View.VISIBLE);
 
-        String[] projection = { FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID,
+        String[] projection = {FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID,
                 FavoritesContract.FavoritesEntry.COLUMN_MOVIE_POSTER_PATH};
 
         Cursor cursor = getContentResolver().query(FavoritesContract.FavoritesEntry.CONTENT_URI,
@@ -136,18 +136,16 @@ public class MainActivity extends AppCompatActivity {
                 null,
                 null);
 
-
-
+        // Check if the returned cursor is empty, meaning there are no favorited movies
         try {
             if (cursor.getCount() != 0) {
                 FavoritesAdapter favoritesAdapter = new FavoritesAdapter(this, cursor);
                 mRecyclerView.setAdapter(favoritesAdapter);
-            } else
-            {
+            } else {
                 showErrorMessage(getString(R.string.error_empty_favorites));
             }
         } catch (NullPointerException e) {
-              showErrorMessage(getString(R.string.error_empty_favorites));
+            showErrorMessage(getString(R.string.error_empty_favorites));
         }
 
 
@@ -165,6 +163,13 @@ public class MainActivity extends AppCompatActivity {
         mLoadingPB.setVisibility(View.GONE);
         mRecyclerView.setVisibility(View.GONE);
         mErrorTV.setText(error);
+
+        // Favorites section does not need a retry button as its data is local and always available
+        if (error.equals(getString(R.string.error_empty_favorites))) {
+            mRetryButton.setVisibility(View.GONE);
+        } else {
+            mRetryButton.setVisibility(View.VISIBLE);
+        }
         mErrorMessageView.setVisibility(View.VISIBLE);
     }
 
@@ -175,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    /* Retrieve posters by popularity or rating */
+    /* Retrieve posters by popularity/rating or show favorites */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {

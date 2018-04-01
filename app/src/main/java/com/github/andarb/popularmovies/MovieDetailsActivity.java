@@ -142,6 +142,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
         snapHelper.attachToRecyclerView(mReviewRV);
         mReviewAdapter = new ReviewAdapter(this);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         retrieveMovieDetails();
     }
 
