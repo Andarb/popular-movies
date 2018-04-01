@@ -1,13 +1,13 @@
-package com.slackar.popularmovies;
+package com.github.andarb.popularmovies;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
@@ -21,15 +21,16 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.slackar.popularmovies.adapters.PosterAdapter;
-import com.slackar.popularmovies.data.FavoritesContract;
-import com.slackar.popularmovies.data.Video;
-import com.slackar.popularmovies.utils.FavoritesPoster;
-import com.slackar.popularmovies.utils.RetrofitClient;
-import com.slackar.popularmovies.adapters.ReviewAdapter;
-import com.slackar.popularmovies.adapters.VideoAdapter;
-import com.slackar.popularmovies.data.Review;
-import com.slackar.popularmovies.utils.ReviewRecycler;
+import com.github.andarb.popularmovies.adapters.PosterAdapter;
+import com.github.andarb.popularmovies.adapters.ReviewAdapter;
+import com.github.andarb.popularmovies.adapters.VideoAdapter;
+import com.github.andarb.popularmovies.data.FavoritesContract;
+import com.github.andarb.popularmovies.data.Review;
+import com.github.andarb.popularmovies.data.Video;
+import com.github.andarb.popularmovies.utils.FavoritesPoster;
+import com.github.andarb.popularmovies.utils.RetrofitClient;
+import com.github.andarb.popularmovies.utils.ReviewRecycler;
+import com.slackar.popularmovies.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -91,7 +92,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
     @BindView(R.id.reviews_error_tv)
     TextView mReviewErrorTV;
 
-    private com.slackar.popularmovies.data.Movie mMovie;
+    private com.github.andarb.popularmovies.data.Movie mMovie;
     private String mMovieId;
 
     private VideoAdapter mTrailerAdapter;
@@ -147,12 +148,12 @@ public class MovieDetailsActivity extends AppCompatActivity {
     /* Download and parse movie details using Retrofit */
     private void retrieveMovieDetails() {
         mDetailsPB.setVisibility(View.VISIBLE);
-        Call<com.slackar.popularmovies.data.Movie> getCall = RetrofitClient.getMovieDetails(mMovieId);
+        Call<com.github.andarb.popularmovies.data.Movie> getCall = RetrofitClient.getMovieDetails(mMovieId);
 
-        getCall.enqueue(new Callback<com.slackar.popularmovies.data.Movie>() {
+        getCall.enqueue(new Callback<com.github.andarb.popularmovies.data.Movie>() {
             @Override
-            public void onResponse(Call<com.slackar.popularmovies.data.Movie> call,
-                                   Response<com.slackar.popularmovies.data.Movie> response) {
+            public void onResponse(Call<com.github.andarb.popularmovies.data.Movie> call,
+                                   Response<com.github.andarb.popularmovies.data.Movie> response) {
                 if (response.isSuccessful()) {
                     hideErrorMessage();
 
@@ -169,7 +170,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<com.slackar.popularmovies.data.Movie> call, Throwable t) {
+            public void onFailure(Call<com.github.andarb.popularmovies.data.Movie> call, Throwable t) {
                 showErrorMessage(getString(R.string.error_internet));
             }
         });

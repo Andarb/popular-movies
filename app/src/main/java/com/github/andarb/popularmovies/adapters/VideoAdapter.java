@@ -1,4 +1,4 @@
-package com.slackar.popularmovies.adapters;
+package com.github.andarb.popularmovies.adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,8 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.github.andarb.popularmovies.data.Video;
 import com.slackar.popularmovies.R;
-import com.slackar.popularmovies.data.Video;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;

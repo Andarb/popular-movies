@@ -1,18 +1,16 @@
-package com.slackar.popularmovies.adapters;
+package com.github.andarb.popularmovies.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.github.andarb.popularmovies.data.Review;
 import com.slackar.popularmovies.R;
-import com.slackar.popularmovies.data.Review;
-import com.slackar.popularmovies.utils.ReviewRecycler;
 
 import java.util.List;
 

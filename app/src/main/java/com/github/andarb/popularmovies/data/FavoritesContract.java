@@ -1,4 +1,4 @@
-package com.slackar.popularmovies.data;
+package com.github.andarb.popularmovies.data;
 
 import android.net.Uri;
 import android.provider.BaseColumns;

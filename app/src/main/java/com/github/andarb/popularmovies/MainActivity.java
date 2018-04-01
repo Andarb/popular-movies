@@ -1,8 +1,8 @@
-package com.slackar.popularmovies;
+package com.github.andarb.popularmovies;
 
 import android.database.Cursor;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -16,12 +16,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.slackar.popularmovies.adapters.FavoritesAdapter;
-import com.slackar.popularmovies.data.FavoritesContract;
-import com.slackar.popularmovies.utils.RetrofitClient;
-import com.slackar.popularmovies.adapters.PosterAdapter;
-import com.slackar.popularmovies.data.Poster;
-import com.slackar.popularmovies.data.PosterList;
+import com.github.andarb.popularmovies.adapters.FavoritesAdapter;
+import com.github.andarb.popularmovies.adapters.PosterAdapter;
+import com.github.andarb.popularmovies.data.FavoritesContract;
+import com.github.andarb.popularmovies.data.Poster;
+import com.github.andarb.popularmovies.data.PosterList;
+import com.github.andarb.popularmovies.utils.RetrofitClient;
+import com.slackar.popularmovies.R;
 
 import java.util.List;
 

@@ -1,10 +1,10 @@
-package com.slackar.popularmovies.utils;
+package com.github.andarb.popularmovies.utils;
 
 
+import com.github.andarb.popularmovies.MainActivity;
+import com.github.andarb.popularmovies.data.Movie;
+import com.github.andarb.popularmovies.data.PosterList;
 import com.slackar.popularmovies.BuildConfig;
-import com.slackar.popularmovies.MainActivity;
-import com.slackar.popularmovies.data.Movie;
-import com.slackar.popularmovies.data.PosterList;
 
 import retrofit2.Call;
 import retrofit2.Retrofit;

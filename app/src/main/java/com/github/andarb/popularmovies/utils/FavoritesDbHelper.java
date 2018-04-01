@@ -1,10 +1,10 @@
-package com.slackar.popularmovies.utils;
+package com.github.andarb.popularmovies.utils;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.slackar.popularmovies.data.FavoritesContract;
+import com.github.andarb.popularmovies.data.FavoritesContract;
 
 /* Helper class to manage the database of favorite movies */
 public class FavoritesDbHelper extends SQLiteOpenHelper {

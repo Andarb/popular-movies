@@ -1,21 +1,19 @@
-package com.slackar.popularmovies.utils;
+package com.github.andarb.popularmovies.utils;
 
 import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.IntentFilter;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
-import com.slackar.popularmovies.data.FavoritesContract;
+import com.github.andarb.popularmovies.data.FavoritesContract;
 
-import static com.slackar.popularmovies.data.FavoritesContract.FavoritesEntry.TABLE_NAME;
+import static com.github.andarb.popularmovies.data.FavoritesContract.FavoritesEntry.TABLE_NAME;
 
 /* Content provider for the user's favorite movies */
 public class FavoritesContentProvider extends ContentProvider {

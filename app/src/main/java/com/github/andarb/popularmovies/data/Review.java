@@ -1,4 +1,4 @@
-package com.slackar.popularmovies.data;
+package com.github.andarb.popularmovies.data;
 
 /* Movie review retrieved from themoviedb JSON */
 public class Review {

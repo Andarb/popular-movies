@@ -1,4 +1,4 @@
-package com.slackar.popularmovies.utils;
+package com.github.andarb.popularmovies.utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
