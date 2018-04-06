@@ -35,9 +35,15 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    // IDs used to decide which sort order is required
-    public static final int SORT_BY_POPULARITY = 100;
-    public static final int SORT_BY_RATING = 101;
+    private static final String MOVIES_TYPE_STATE_KEY = "movies_type";
+
+    // IDs to decide which movies to retrieve
+    public static final int MOST_POPULAR = 100;
+    public static final int HIGHEST_RATED = 101;
+    public static final int FAVORITES = 103;
+
+    // Retrieve popular movies by default
+    private int mMoviesType = MOST_POPULAR;
 
     @BindView(R.id.posters_rv)
     RecyclerView mRecyclerView;
@@ -51,12 +57,6 @@ public class MainActivity extends AppCompatActivity {
     TextView mErrorTV;
     @BindView(R.id.retry_button)
     Button mRetryButton;
-
-    private PosterAdapter mMovieAdapter;
-    private List<Poster> mMoviesList;
-
-    // Initiliazed to the default way of sorting movies
-    private int mSortType = SORT_BY_POPULARITY;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,15 +77,30 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, nrOfGridColumns));
         mRecyclerView.setHasFixedSize(true);
 
-        mMovieAdapter = new PosterAdapter(this);
+        // Check if state was saved, and if `Favorites` were open at that time
+        if (savedInstanceState != null) {
+            mMoviesType = savedInstanceState.getInt(MOVIES_TYPE_STATE_KEY);
+            if (mMoviesType == FAVORITES) {
+                retrieveFavorites();
+                return;
+            }
+        }
 
         retrievePosters();
+    }
+
+    /* Save the type of movie list was displayed at the time: popular, highest rated or favorites */
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt(MOVIES_TYPE_STATE_KEY, mMoviesType);
+
+        super.onSaveInstanceState(outState);
     }
 
     /* Download and parse a list of movies using Retrofit */
     private void retrievePosters() {
         mLoadingPB.setVisibility(View.VISIBLE);
-        Call<PosterList> getCall = RetrofitClient.getPosters(mSortType);
+        Call<PosterList> getCall = RetrofitClient.getPosters(mMoviesType);
 
         getCall.enqueue(new Callback<PosterList>() {
             @Override
@@ -93,16 +108,18 @@ public class MainActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     hideErrorMessage();
 
-                    mMoviesList = response.body().getResults();
-                    if (mMoviesList == null) {
+                    List<Poster> moviesList = response.body().getResults();
+                    if (moviesList == null) {
                         showErrorMessage(getString(R.string.error_empty_list));
                         return;
                     }
-                    mMovieAdapter.setMovies(mMoviesList);
-                    mRecyclerView.setAdapter(mMovieAdapter);
 
+                    PosterAdapter movieAdapter = new PosterAdapter(MainActivity.this, moviesList);
+                    mRecyclerView.setAdapter(movieAdapter);
+
+                    // Loading complete - show appropriate `Toast`
                     mLoadingPB.setVisibility(View.GONE);
-                    if (mSortType == SORT_BY_POPULARITY) {
+                    if (mMoviesType == MOST_POPULAR) {
                         Toast.makeText(MainActivity.this,
                                 getString(R.string.toast_most_popular), Toast.LENGTH_SHORT).show();
                     } else {
@@ -148,8 +165,9 @@ public class MainActivity extends AppCompatActivity {
             showErrorMessage(getString(R.string.error_empty_favorites));
         }
 
-
         mLoadingPB.setVisibility(View.GONE);
+        Toast.makeText(MainActivity.this,
+                getString(R.string.toast_favorites), Toast.LENGTH_SHORT).show();
     }
 
     /* Hides the error message and makes the posters visible again */
@@ -180,19 +198,20 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    /* Retrieve posters by popularity/rating or show favorites */
+    /* Retrieve posters by popularity/rating, or show favorites */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.most_popular:
-                mSortType = SORT_BY_POPULARITY;
+                mMoviesType = MOST_POPULAR;
                 retrievePosters();
                 return true;
             case R.id.highest_rated:
-                mSortType = SORT_BY_RATING;
+                mMoviesType = HIGHEST_RATED;
                 retrievePosters();
                 return true;
             case R.id.favorites:
+                mMoviesType = FAVORITES;
                 retrieveFavorites();
                 return true;
             default:

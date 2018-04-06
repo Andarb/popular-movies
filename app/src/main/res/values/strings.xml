@@ -6,9 +6,10 @@
     <string name="menu_highest_rated">Highest Rated</string>
     <string name="menu_favorites">Favorites</string>
 
-    <!--Toast message shown after movie sorting is changed-->
+    <!--Toast message shown after overflow menu item is clicked-->
     <string name="toast_most_popular">Most popular movies.</string>
     <string name="toast_highest_rated">Highest rated movies.</string>
+    <string name="toast_favorites">Favorite movies.</string>
 
     <!--Labels used in activity_movie_details.xml-->
     <string name="release_date_label">Release Date</string>

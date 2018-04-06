@@ -63,9 +63,9 @@ public final class RetrofitClient {
         MovieApi apiService = setupRetrofit();
 
         switch (sortType) {
-            case MainActivity.SORT_BY_POPULARITY:
+            case MainActivity.MOST_POPULAR:
                 return apiService.getPopular(API_KEY);
-            case MainActivity.SORT_BY_RATING:
+            case MainActivity.HIGHEST_RATED:
                 return apiService.getHighestRated(API_KEY);
             default:
                 return apiService.getPopular(API_KEY);

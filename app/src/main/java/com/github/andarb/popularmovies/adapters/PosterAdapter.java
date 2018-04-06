@@ -29,8 +29,9 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterView
     private static final String POSTER_SIZE = "w185";
     public static final String POSTER_BASE_URL = BASE_URL + POSTER_SIZE;
 
-    public PosterAdapter(Context context) {
+    public PosterAdapter(Context context, List<Poster> movies) {
         mContext = context;
+        mMovies = movies;
     }
 
     class PosterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -83,11 +84,5 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterView
     @Override
     public int getItemCount() {
         return mMovies.size();
-    }
-
-    /* Sets a list of movies (retrieved and parsed earlier from 'themoviedb')
-     to be used by adapter  */
-    public void setMovies(List<Poster> movies) {
-        mMovies = movies;
     }
 }
