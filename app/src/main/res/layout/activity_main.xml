@@ -11,6 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <!-- A loading indicator and an error message view that are shown/hidden when necessary -->
+
     <ProgressBar
         android:id="@+id/posters_loading_pb"
         android:layout_width="42dp"
