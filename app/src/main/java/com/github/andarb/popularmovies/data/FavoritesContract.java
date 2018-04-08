@@ -8,7 +8,7 @@ public final class FavoritesContract {
 
     // Content provider constants
     public static final String AUTHORITY = "com.slackar.popularmovies";
-    public static final Uri BASE_URI = Uri.parse("content://" + AUTHORITY);
+    private static final Uri BASE_URI = Uri.parse("content://" + AUTHORITY);
     public static final String PATH_FAVORITES = "favorites";
 
     // Private constructor to prevent anyone from instantiating the class

@@ -27,24 +27,24 @@ public final class RetrofitClient {
 
     // Append request for videos and reviews to the movie details query
     private static final String APPEND_QUERY = "append_to_response";
-    private static final String VIDEOS_AND_REVIEWS = "videos,reviews";
+    private static final String APPEND_QUERY_VALUE = "videos,reviews";
 
     // Paths used to retrieve most popular/highest rated movies, trailers and reviews
     private static final String MOST_POPULAR_PATH = "popular";
-    private static final String TOP_RATED_PATH = "top_rated";
+    private static final String HIGHEST_RATED_PATH = "top_rated";
 
     /* Retrofit interface for retrieving movies */
     private interface MovieApi {
         @GET(MOST_POPULAR_PATH)
-        Call<PosterList> getPopular(@Query(API_KEY_QUERY) String apiKey);
+        Call<PosterList> getMostPopular(@Query(API_KEY_QUERY) String apiKey);
 
-        @GET(TOP_RATED_PATH)
+        @GET(HIGHEST_RATED_PATH)
         Call<PosterList> getHighestRated(@Query(API_KEY_QUERY) String apiKey);
 
         @GET(MOVIE_ID_PATH_MASK)
         Call<Movie> getMovieDetails(@Path(MOVIE_ID_PATH) String movieId,
                                     @Query(API_KEY_QUERY) String apiKey,
-                                    @Query(APPEND_QUERY) String videosAndReviews);
+                                    @Query(APPEND_QUERY) String appendValue);
     }
 
     /* Set up retrofit and its service */
@@ -64,11 +64,11 @@ public final class RetrofitClient {
 
         switch (sortType) {
             case MainActivity.MOST_POPULAR:
-                return apiService.getPopular(API_KEY);
+                return apiService.getMostPopular(API_KEY);
             case MainActivity.HIGHEST_RATED:
                 return apiService.getHighestRated(API_KEY);
             default:
-                return apiService.getPopular(API_KEY);
+                return apiService.getMostPopular(API_KEY);
         }
     }
 
@@ -76,6 +76,6 @@ public final class RetrofitClient {
     public static Call<Movie> getMovieDetails(String movieId) {
         MovieApi apiService = setupRetrofit();
 
-        return apiService.getMovieDetails(movieId, API_KEY, VIDEOS_AND_REVIEWS);
+        return apiService.getMovieDetails(movieId, API_KEY, APPEND_QUERY_VALUE);
     }
 }

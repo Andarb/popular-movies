@@ -3,13 +3,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.github.andarb.popularmovies.MainActivity"
-    android:background="@color/colorPrimary">
+    android:background="@color/colorPrimary"
+    tools:context="com.github.andarb.popularmovies.MainActivity">
+
+    <!-- RecyclerView for Most Popular/Highest Rated movies, and GridView for Favorites that uses CursorAdapter -->
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/posters_rv"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
+    <GridView
+        android:numColumns="2"
+        android:id="@+id/posters_gv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
 
     <!-- A loading indicator and an error message view that are shown/hidden when necessary -->
 
@@ -22,8 +31,8 @@
     <include
         android:id="@+id/error_message_posters"
         layout="@layout/error_message"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_centerInParent="true"
         android:visibility="gone" />
 

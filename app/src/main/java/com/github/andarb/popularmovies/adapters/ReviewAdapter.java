@@ -17,6 +17,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/* Bind user review content and author to TextViews that are nested inside a CardView.
+ * An onClickListener is set to collapse or expand a long review.
+ */
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder> {
     private final Context mContext;
     private List<Review> mReviews;

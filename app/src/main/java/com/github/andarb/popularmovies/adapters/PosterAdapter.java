@@ -19,6 +19,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/* Movie posters downloaded from `themoviedb` and bound to Imageviews
+ * in a grid recyclerview
+ */
 public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterViewHolder> {
 
     private final Context mContext;

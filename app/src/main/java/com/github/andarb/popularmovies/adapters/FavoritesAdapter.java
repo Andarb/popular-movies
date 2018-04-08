@@ -1,16 +1,14 @@
 package com.github.andarb.popularmovies.adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CursorAdapter;
 import android.widget.ImageView;
 
-import com.github.andarb.popularmovies.MovieDetailsActivity;
 import com.github.andarb.popularmovies.data.FavoritesContract;
 import com.github.andarb.popularmovies.utils.FavoritesPoster;
 import com.slackar.popularmovies.R;
@@ -18,71 +16,51 @@ import com.slackar.popularmovies.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.FavoritesViewHolder> {
-
-    private final Context mContext;
-    private Cursor mCursor;
+/* Display posters of favorite movies.
+ * Poster image file path retrieved from the local db.
+ * Image retrieved from internal storage and bound to a grid of ImageViews
+ */
+public class FavoritesAdapter extends CursorAdapter {
     private int mMovieIdColumnIndex;
+    private LayoutInflater mLayoutInflater;
 
-    public FavoritesAdapter(Context context, Cursor cursor) {
-        mContext = context;
-        mCursor = cursor;
-        mMovieIdColumnIndex = cursor.getColumnIndex(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID);
+    public FavoritesAdapter(Context context, Cursor c, int flags) {
+        super(context, c, flags);
+
+        mMovieIdColumnIndex = c.getColumnIndex(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID);
+        mLayoutInflater = LayoutInflater.from(context);
     }
 
-    class FavoritesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        @BindView(R.id.list_item_poster)
-        ImageView listItemPoster;
-
-        /* Bind ImageView of the poster, and set an OnClickListener on the list item */
-        public FavoritesViewHolder(View itemView) {
-            super(itemView);
-
-            ButterKnife.bind(this, itemView);
-            itemView.setOnClickListener(this);
-        }
-
-        /* When one of the posters is clicked, start MovieDetailsActivity
-        passing it the ID of the movie.
-         */
-        @Override
-        public void onClick(View view) {
-            Intent movieDetailsIntent = new Intent(mContext, MovieDetailsActivity.class);
-
-            int position = getAdapterPosition();
-            mCursor.moveToPosition(position);
-
-            String movieId = mCursor.getString(mMovieIdColumnIndex);
-
-            movieDetailsIntent.putExtra(MovieDetailsActivity.MOVIE_ID_INTENT_KEY, movieId);
-            mContext.startActivity(movieDetailsIntent);
-        }
-    }
-
-    /* Inflate list item and intialize with it a new viewholder */
+    /* Inflate grid item layout, set up a ViewHolder for view caching, and return both to be used in bindView() */
     @Override
-    public FavoritesAdapter.FavoritesViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        LayoutInflater layoutInflater = LayoutInflater.from(mContext);
-        View view = layoutInflater.inflate(R.layout.poster_grid_item, parent, false);
+    public View newView(Context context, Cursor cursor, ViewGroup parent) {
+        View view = mLayoutInflater.inflate(R.layout.poster_grid_item, parent, false);
 
-        return new FavoritesAdapter.FavoritesViewHolder(view);
+        ViewHolder viewHolder = new ViewHolder(view);
+        view.setTag(viewHolder);
+
+        return view;
     }
 
-    /* Load the movie poster from internal storage, and set it for the list item */
+    /* Get the filename for poster image, retrieve it from disk, and bind it to ImageView */
     @Override
-    public void onBindViewHolder(FavoritesAdapter.FavoritesViewHolder holder, int position) {
-        mCursor.moveToPosition(position);
+    public void bindView(View view, Context context, Cursor cursor) {
+        String posterFileName = cursor.getString(mMovieIdColumnIndex);
+        Bitmap poster = FavoritesPoster.loadImage(context, posterFileName);
 
-        String posterFileName = mCursor.getString(mMovieIdColumnIndex);
-        Bitmap poster = FavoritesPoster.loadImage(mContext, posterFileName);
+        // Retrieve cached views returned from `newView()`
+        ViewHolder holder = (ViewHolder) view.getTag();
 
         holder.listItemPoster.setImageBitmap(poster);
     }
 
-    /* Number of movies retrieved from 'themoviedb' */
-    @Override
-    public int getItemCount() {
-        return mCursor.getCount();
-    }
+    /* Bind ImageView of the poster */
+    public static class ViewHolder {
+        @BindView(R.id.list_item_poster)
+        ImageView listItemPoster;
 
+        public ViewHolder(View itemView) {
+            ButterKnife.bind(this, itemView);
+        }
+    }
 }

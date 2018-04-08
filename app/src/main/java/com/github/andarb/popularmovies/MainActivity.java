@@ -1,5 +1,6 @@
 package com.github.andarb.popularmovies;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -11,7 +12,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.posters_rv)
     RecyclerView mRecyclerView;
+    @BindView(R.id.posters_gv)
+    GridView mGridView;
     @BindView(R.id.posters_loading_pb)
     ProgressBar mLoadingPB;
 
@@ -106,7 +111,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<PosterList> call, Response<PosterList> response) {
                 if (response.isSuccessful()) {
-                    hideErrorMessage();
 
                     List<Poster> moviesList = response.body().getResults();
                     if (moviesList == null) {
@@ -118,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
                     mRecyclerView.setAdapter(movieAdapter);
 
                     // Loading complete - show appropriate `Toast`
+                    hideErrorMessage();
                     mLoadingPB.setVisibility(View.GONE);
                     if (mMoviesType == MOST_POPULAR) {
                         Toast.makeText(MainActivity.this,
@@ -141,10 +146,10 @@ public class MainActivity extends AppCompatActivity {
 
     /* Retrieve a list of favorite movies from local db */
     private void retrieveFavorites() {
-        hideErrorMessage();
         mLoadingPB.setVisibility(View.VISIBLE);
 
-        String[] projection = {FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID,
+        String[] projection = {FavoritesContract.FavoritesEntry._ID,
+                FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID,
                 FavoritesContract.FavoritesEntry.COLUMN_MOVIE_POSTER_PATH};
 
         Cursor cursor = getContentResolver().query(FavoritesContract.FavoritesEntry.CONTENT_URI,
@@ -153,11 +158,32 @@ public class MainActivity extends AppCompatActivity {
                 null,
                 null);
 
-        // Check if the returned cursor is empty, meaning there are no favorited movies
+        // If the returned cursor isn't empty, show a grid of favorite movies
         try {
             if (cursor.getCount() != 0) {
-                FavoritesAdapter favoritesAdapter = new FavoritesAdapter(this, cursor);
-                mRecyclerView.setAdapter(favoritesAdapter);
+                final FavoritesAdapter favoritesAdapter = new FavoritesAdapter(this, cursor, 0);
+                mGridView.setAdapter(favoritesAdapter);
+
+                // When a favorite movie is clicked, open it's details in MovieDetailsActvity
+                mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        Intent movieDetailsIntent = new Intent(MainActivity.this,
+                                MovieDetailsActivity.class);
+
+                        // Retrieve cursors from adapter, and get clicked movie's ID
+                        Cursor adapterCursor = (Cursor) favoritesAdapter.getItem(position);
+                        int movieIdColumnIndex = adapterCursor.
+                                getColumnIndex(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID);
+                        String movieId = adapterCursor.getString(movieIdColumnIndex);
+
+                        movieDetailsIntent.putExtra(MovieDetailsActivity.MOVIE_ID_INTENT_KEY, movieId);
+                        startActivity(movieDetailsIntent);
+                    }
+                });
+
+                mLoadingPB.setVisibility(View.GONE);
+                hideErrorMessage();
             } else {
                 showErrorMessage(getString(R.string.error_empty_favorites));
             }
@@ -165,7 +191,6 @@ public class MainActivity extends AppCompatActivity {
             showErrorMessage(getString(R.string.error_empty_favorites));
         }
 
-        mLoadingPB.setVisibility(View.GONE);
         Toast.makeText(MainActivity.this,
                 getString(R.string.toast_favorites), Toast.LENGTH_SHORT).show();
     }
@@ -173,21 +198,30 @@ public class MainActivity extends AppCompatActivity {
     /* Hides the error message and makes the posters visible again */
     private void hideErrorMessage() {
         mErrorMessageView.setVisibility(View.GONE);
-        mRecyclerView.setVisibility(View.VISIBLE);
+
+        if (mMoviesType == FAVORITES) {
+            mRecyclerView.setVisibility(View.GONE);
+            mGridView.setVisibility(View.VISIBLE);
+        } else {
+            mGridView.setVisibility(View.GONE);
+            mRecyclerView.setVisibility(View.VISIBLE);
+        }
     }
 
     /* Shows the error message and hides everything else */
     private void showErrorMessage(String error) {
         mLoadingPB.setVisibility(View.GONE);
-        mRecyclerView.setVisibility(View.GONE);
-        mErrorTV.setText(error);
 
         // Favorites section does not need a retry button as its data is local and always available
-        if (error.equals(getString(R.string.error_empty_favorites))) {
+        if (mMoviesType == FAVORITES) {
+            mGridView.setVisibility(View.GONE);
             mRetryButton.setVisibility(View.GONE);
         } else {
+            mRecyclerView.setVisibility(View.GONE);
             mRetryButton.setVisibility(View.VISIBLE);
         }
+
+        mErrorTV.setText(error);
         mErrorMessageView.setVisibility(View.VISIBLE);
     }
 

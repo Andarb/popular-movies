@@ -19,6 +19,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/* Download a thumbnail of the youtube video, and set a description for it.
+ * When clicked on, an implicit intent is sent for a YouTube app or browser to play this video.
+ */
 public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.TrailerViewHolder> {
     private final Context mContext;
     private List<Video> mVideos;
