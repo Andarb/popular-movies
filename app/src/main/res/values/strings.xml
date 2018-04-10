@@ -28,7 +28,10 @@
     <string name="error_add_favorite">Adding to favorites failed. Try again.</string>
     <string name="error_empty_favorites">You have no favorites.</string>
 
-    <!--Message displayed to user when no movie release date or votes are found-->
+    <!-- Toast message when a movie is successfully added to `Favorites`-->
+    <string name="added_to_favorites">Added to Favorites.</string>
+
+    <!--Message displayed to user when no movie release date, or votes are found-->
     <string name="error_missing_info">Unknown</string>
 
     <!--Button to retry connection to the server-->

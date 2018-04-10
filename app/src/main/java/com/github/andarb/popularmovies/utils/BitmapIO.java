@@ -17,9 +17,13 @@ import java.io.IOException;
 
 /* Helper class to download the poster image of a favorited movie from `themoviedb`. Or to
 save/load/delete that image to/from internal storage. */
-public final class FavoritesPoster {
+public final class BitmapIO {
 
-    private static final String TAG = FavoritesPoster.class.getSimpleName();
+    private static final String TAG = BitmapIO.class.getSimpleName();
+
+    // The most common poster image resolution
+    private static final int BITMAP_WIDTH = 185;
+    private static final int BITMAP_HEIGHT = 278;
 
     // Picasso stores a weak reference of Target object which we don't want in our case
     private static Target mTarget;
@@ -56,6 +60,14 @@ public final class FavoritesPoster {
                 try {
                     outputStream = context.openFileOutput(filename, Context.MODE_PRIVATE);
 
+                    /* If the poster has an unusual height, scale it up/down. Since ImageView's
+                     * `scaleType=centerCrop` is not supported by a bitmap, scaling it here to standard
+                     * size will help prevent any empty gaps between posters when shown in GridView.
+                     */
+                    if (bitmap.getHeight() != BITMAP_HEIGHT) {
+                        bitmap = Bitmap.createScaledBitmap(bitmap, BITMAP_WIDTH, BITMAP_HEIGHT, false);
+                    }
+
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
                 } catch (FileNotFoundException e) {
                     mSaveSuccessful = false;
@@ -89,8 +101,7 @@ public final class FavoritesPoster {
     }
 
     /* Deletes an earlier downloaded poster from internal storage */
-    public static boolean deleteImage(Context context, String posterFile)
-    {
+    public static boolean deleteImage(Context context, String posterFile) {
         return context.deleteFile(posterFile);
     }
 }

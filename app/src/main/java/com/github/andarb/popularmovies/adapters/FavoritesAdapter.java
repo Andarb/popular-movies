@@ -10,7 +10,7 @@ import android.widget.CursorAdapter;
 import android.widget.ImageView;
 
 import com.github.andarb.popularmovies.data.FavoritesContract;
-import com.github.andarb.popularmovies.utils.FavoritesPoster;
+import com.github.andarb.popularmovies.utils.BitmapIO;
 import com.slackar.popularmovies.R;
 
 import butterknife.BindView;
@@ -21,13 +21,11 @@ import butterknife.ButterKnife;
  * Image retrieved from internal storage and bound to a grid of ImageViews
  */
 public class FavoritesAdapter extends CursorAdapter {
-    private int mMovieIdColumnIndex;
     private LayoutInflater mLayoutInflater;
 
     public FavoritesAdapter(Context context, Cursor c, int flags) {
         super(context, c, flags);
 
-        mMovieIdColumnIndex = c.getColumnIndex(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID);
         mLayoutInflater = LayoutInflater.from(context);
     }
 
@@ -42,16 +40,20 @@ public class FavoritesAdapter extends CursorAdapter {
         return view;
     }
 
-    /* Get the filename for poster image, retrieve it from disk, and bind it to ImageView */
+    /* Get the filename (which is the same as movie ID) for the poster image, retrieve it from disk,
+     * and bind it to ImageView.
+     */
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
-        String posterFileName = cursor.getString(mMovieIdColumnIndex);
-        Bitmap poster = FavoritesPoster.loadImage(context, posterFileName);
+        int movieIdColumnIndex = cursor.getColumnIndex(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID);
+        String posterFileName = cursor.getString(movieIdColumnIndex);
+
+        Bitmap posterBitmap = BitmapIO.loadImage(context, posterFileName);
 
         // Retrieve cached views returned from `newView()`
         ViewHolder holder = (ViewHolder) view.getTag();
 
-        holder.listItemPoster.setImageBitmap(poster);
+        holder.listItemPoster.setImageBitmap(posterBitmap);
     }
 
     /* Bind ImageView of the poster */

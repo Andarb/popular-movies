@@ -27,7 +27,7 @@ import com.github.andarb.popularmovies.adapters.VideoAdapter;
 import com.github.andarb.popularmovies.data.FavoritesContract;
 import com.github.andarb.popularmovies.data.Review;
 import com.github.andarb.popularmovies.data.Video;
-import com.github.andarb.popularmovies.utils.FavoritesPoster;
+import com.github.andarb.popularmovies.utils.BitmapIO;
 import com.github.andarb.popularmovies.utils.RetrofitClient;
 import com.github.andarb.popularmovies.utils.ReviewRecycler;
 import com.slackar.popularmovies.R;
@@ -251,7 +251,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
     public void amendFavorites() {
         if (mIsFavorite) {
             // Remove movie poster from internal storage
-            if (!(FavoritesPoster.deleteImage(this, mMovieId))) {
+            if (!(BitmapIO.deleteImage(this, mMovieId))) {
                 Toast.makeText(this,
                         getString(R.string.error_remove_favorite), Toast.LENGTH_LONG).show();
                 return;
@@ -277,7 +277,11 @@ public class MovieDetailsActivity extends AppCompatActivity {
             // Save movie poster to internal memory
             String posterImageUrl = PosterAdapter.POSTER_BASE_URL + mMovie.getPosterPath();
 
-            if (!(FavoritesPoster.saveImage(this, mMovieId, posterImageUrl))) {
+            /* As we are already saving a unique movie ID to the database, we can reuse it as our
+             * filename for the poster image. This saves us from creating an extra filename column
+             * in the db table.
+             */
+            if (!(BitmapIO.saveImage(this, mMovieId, posterImageUrl))) {
                 Toast.makeText(this,
                         getString(R.string.error_add_favorite), Toast.LENGTH_LONG).show();
                 return;
@@ -287,7 +291,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
             ContentValues movieCV = new ContentValues();
             movieCV.put(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID, mMovieId);
             movieCV.put(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_TITLE, mMovie.getTitle());
-            movieCV.put(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_POSTER_PATH, getFilesDir().getAbsolutePath() + mMovieId);
 
             Uri insertedRowUri = mContentResolver.insert(FavoritesContract.FavoritesEntry.CONTENT_URI, movieCV);
 
@@ -295,6 +298,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
                 Toast.makeText(this,
                         getString(R.string.error_add_favorite), Toast.LENGTH_LONG).show();
             } else {
+                Toast.makeText(this,
+                        getString(R.string.added_to_favorites), Toast.LENGTH_SHORT).show();
                 mFavoriteButton.setImageResource(R.drawable.ic_favorite_white_24dp);
                 mIsFavorite = true;
             }

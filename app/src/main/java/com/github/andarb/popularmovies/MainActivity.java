@@ -43,10 +43,14 @@ public class MainActivity extends AppCompatActivity {
     // IDs to decide which movies to retrieve
     public static final int MOST_POPULAR = 100;
     public static final int HIGHEST_RATED = 101;
-    public static final int FAVORITES = 103;
+    public static final int FAVORITES = 102;
 
     // Retrieve popular movies by default
     private int mMoviesType = MOST_POPULAR;
+
+    // Cursor and adapter used to query display Favorite movies
+    private Cursor mFavoritesCursor;
+    private FavoritesAdapter mFavoritesAdapter;
 
     @BindView(R.id.posters_rv)
     RecyclerView mRecyclerView;
@@ -69,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        // When there is a connection issue, retry retrieving posters
+        // When there is a connection issue, retry retrieving movie posters
         mRetryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -81,6 +85,28 @@ public class MainActivity extends AppCompatActivity {
         int nrOfGridColumns = 2;
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, nrOfGridColumns));
         mRecyclerView.setHasFixedSize(true);
+
+        // Initial setup of the Favorites adapter and grid view
+        mFavoritesAdapter = new FavoritesAdapter(this, null, 0);
+        mGridView.setAdapter(mFavoritesAdapter);
+
+        // When a favorite movie is clicked, open it's details in MovieDetailsActvity
+        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent movieDetailsIntent = new Intent(MainActivity.this,
+                        MovieDetailsActivity.class);
+
+                // Retrieve cursor from adapter, and get the clicked movie's ID
+                Cursor adapterCursor = (Cursor) mFavoritesAdapter.getItem(position);
+                int movieIdColumnIndex = adapterCursor.
+                        getColumnIndex(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID);
+                String movieId = adapterCursor.getString(movieIdColumnIndex);
+
+                movieDetailsIntent.putExtra(MovieDetailsActivity.MOVIE_ID_INTENT_KEY, movieId);
+                startActivity(movieDetailsIntent);
+            }
+        });
 
         // Check if state was saved, and if `Favorites` were open at that time
         if (savedInstanceState != null) {
@@ -100,6 +126,24 @@ public class MainActivity extends AppCompatActivity {
         outState.putInt(MOVIES_TYPE_STATE_KEY, mMoviesType);
 
         super.onSaveInstanceState(outState);
+    }
+
+    /* Close the cursor to free up resources */
+    @Override
+    protected void onStop() {
+        if (mFavoritesCursor != null) {
+            mFavoritesCursor.close();
+        }
+
+        super.onStop();
+    }
+
+    /* Reload the favorites list in case a movie was added/removed in MovieDetailsActivity */
+    @Override
+    protected void onRestart() {
+        if (mMoviesType == FAVORITES) retrieveFavorites();
+
+        super.onRestart();
     }
 
     /* Download and parse a list of movies using Retrofit */
@@ -144,15 +188,17 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    /* Retrieve a list of favorite movies from local db */
+    /* Retrieve a list of favorite movies from local db.
+     * Setting the CursorAdapter in onCreate instead of here ensures that whenever this method
+     * is called to refresh the list of favorites, the previous scroll position will remain intact.
+     */
     private void retrieveFavorites() {
         mLoadingPB.setVisibility(View.VISIBLE);
 
         String[] projection = {FavoritesContract.FavoritesEntry._ID,
-                FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID,
-                FavoritesContract.FavoritesEntry.COLUMN_MOVIE_POSTER_PATH};
+                FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID};
 
-        Cursor cursor = getContentResolver().query(FavoritesContract.FavoritesEntry.CONTENT_URI,
+        mFavoritesCursor = getContentResolver().query(FavoritesContract.FavoritesEntry.CONTENT_URI,
                 projection,
                 null,
                 null,
@@ -160,27 +206,9 @@ public class MainActivity extends AppCompatActivity {
 
         // If the returned cursor isn't empty, show a grid of favorite movies
         try {
-            if (cursor.getCount() != 0) {
-                final FavoritesAdapter favoritesAdapter = new FavoritesAdapter(this, cursor, 0);
-                mGridView.setAdapter(favoritesAdapter);
-
-                // When a favorite movie is clicked, open it's details in MovieDetailsActvity
-                mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        Intent movieDetailsIntent = new Intent(MainActivity.this,
-                                MovieDetailsActivity.class);
-
-                        // Retrieve cursors from adapter, and get clicked movie's ID
-                        Cursor adapterCursor = (Cursor) favoritesAdapter.getItem(position);
-                        int movieIdColumnIndex = adapterCursor.
-                                getColumnIndex(FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID);
-                        String movieId = adapterCursor.getString(movieIdColumnIndex);
-
-                        movieDetailsIntent.putExtra(MovieDetailsActivity.MOVIE_ID_INTENT_KEY, movieId);
-                        startActivity(movieDetailsIntent);
-                    }
-                });
+            if (mFavoritesCursor.getCount() != 0) {
+                mFavoritesAdapter.changeCursor(mFavoritesCursor);
+                mFavoritesAdapter.notifyDataSetChanged();
 
                 mLoadingPB.setVisibility(View.GONE);
                 hideErrorMessage();
@@ -208,7 +236,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /* Shows the error message and hides everything else */
+    /* Shows the error message, and hides whatever was visible at the time: recyclerview or gridview */
     private void showErrorMessage(String error) {
         mLoadingPB.setVisibility(View.GONE);
 

@@ -20,8 +20,7 @@ public class FavoritesDbHelper extends SQLiteOpenHelper {
                 "CREATE TABLE " + FavoritesContract.FavoritesEntry.TABLE_NAME + " (" +
                         FavoritesContract.FavoritesEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                         FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID + " TEXT NOT NULL," +
-                        FavoritesContract.FavoritesEntry.COLUMN_MOVIE_TITLE + " TEXT NOT NULL," +
-                        FavoritesContract.FavoritesEntry.COLUMN_MOVIE_POSTER_PATH + " TEXT NOT NULL)";
+                        FavoritesContract.FavoritesEntry.COLUMN_MOVIE_TITLE + " TEXT NOT NULL)";
 
         db.execSQL(SQL_CREATE_ENTRIES);
     }

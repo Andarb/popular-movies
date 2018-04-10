@@ -11,6 +11,7 @@ import android.widget.ImageView;
 
 import com.github.andarb.popularmovies.MovieDetailsActivity;
 import com.github.andarb.popularmovies.data.Poster;
+import com.github.andarb.popularmovies.utils.BitmapIO;
 import com.slackar.popularmovies.R;
 import com.squareup.picasso.Picasso;
 
@@ -27,7 +28,9 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterView
     private final Context mContext;
     private List<Poster> mMovies;
 
-    // Poster url details
+    /* Poster url details. If POSTER_SIZE is modified, BitmapIO.BITMAP_WIDTH and
+     * BitmapIO.BITMAP_HEIGHT should be changed appropriately.
+     */
     private static final String BASE_URL = "http://image.tmdb.org/t/p/";
     private static final String POSTER_SIZE = "w185";
     public static final String POSTER_BASE_URL = BASE_URL + POSTER_SIZE;
