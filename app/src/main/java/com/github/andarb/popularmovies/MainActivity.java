@@ -3,6 +3,8 @@ package com.github.andarb.popularmovies;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -35,10 +37,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final String TAG = MainActivity.class.getSimpleName();
 
+    // Used to retrieve mMoviesType when restoring/saving instance state
     private static final String MOVIES_TYPE_STATE_KEY = "movies_type";
+
+    private static final int FAVORITES_CURSORLOADER_ID = 1000;
 
     // IDs to decide which movies to retrieve
     public static final int MOST_POPULAR = 100;
@@ -48,8 +53,7 @@ public class MainActivity extends AppCompatActivity {
     // Retrieve popular movies by default
     private int mMoviesType = MOST_POPULAR;
 
-    // Cursor and adapter used to query display Favorite movies
-    private Cursor mFavoritesCursor;
+    // Adapter used to query display Favorite movies
     private FavoritesAdapter mFavoritesAdapter;
 
     @BindView(R.id.posters_rv)
@@ -111,8 +115,9 @@ public class MainActivity extends AppCompatActivity {
         // Check if state was saved, and if `Favorites` were open at that time
         if (savedInstanceState != null) {
             mMoviesType = savedInstanceState.getInt(MOVIES_TYPE_STATE_KEY);
+
             if (mMoviesType == FAVORITES) {
-                retrieveFavorites();
+                getSupportLoaderManager().restartLoader(FAVORITES_CURSORLOADER_ID, null, this);
                 return;
             }
         }
@@ -128,20 +133,12 @@ public class MainActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
     }
 
-    /* Close the cursor to free up resources */
-    @Override
-    protected void onStop() {
-        if (mFavoritesCursor != null) {
-            mFavoritesCursor.close();
-        }
-
-        super.onStop();
-    }
-
     /* Reload the favorites list in case a movie was added/removed in MovieDetailsActivity */
     @Override
     protected void onRestart() {
-        if (mMoviesType == FAVORITES) retrieveFavorites();
+        if (mMoviesType == FAVORITES) {
+            getSupportLoaderManager().restartLoader(FAVORITES_CURSORLOADER_ID, null, this);
+        }
 
         super.onRestart();
     }
@@ -188,26 +185,26 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    /* Retrieve a list of favorite movies from local db.
-     * Setting the CursorAdapter in onCreate instead of here ensures that whenever this method
-     * is called to refresh the list of favorites, the previous scroll position will remain intact.
-     */
-    private void retrieveFavorites() {
+    /* Query ContentProvider on the list of favorite movies */
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         mLoadingPB.setVisibility(View.VISIBLE);
 
         String[] projection = {FavoritesContract.FavoritesEntry._ID,
                 FavoritesContract.FavoritesEntry.COLUMN_MOVIE_ID};
 
-        mFavoritesCursor = getContentResolver().query(FavoritesContract.FavoritesEntry.CONTENT_URI,
-                projection,
-                null,
-                null,
-                null);
+        return new android.support.v4.content.CursorLoader(this, FavoritesContract.FavoritesEntry.CONTENT_URI,
+                projection, null, null, null);
+    }
 
-        // If the returned cursor isn't empty, show a grid of favorite movies
+    /* If the list isn't empty, show a list of movies. Otherwise, warn the user there are no
+     * favorites to show.
+     */
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         try {
-            if (mFavoritesCursor.getCount() != 0) {
-                mFavoritesAdapter.changeCursor(mFavoritesCursor);
+            if (data.getCount() != 0) {
+                mFavoritesAdapter.swapCursor(data);
                 mFavoritesAdapter.notifyDataSetChanged();
 
                 mLoadingPB.setVisibility(View.GONE);
@@ -222,6 +219,13 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(MainActivity.this,
                 getString(R.string.toast_favorites), Toast.LENGTH_SHORT).show();
     }
+
+    /* Relieve adapter off old cursor that is about to be closed */
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mFavoritesAdapter.swapCursor(null);
+    }
+
 
     /* Hides the error message and makes the posters visible again */
     private void hideErrorMessage() {
@@ -274,7 +278,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.favorites:
                 mMoviesType = FAVORITES;
-                retrieveFavorites();
+                getSupportLoaderManager().initLoader(0, null, this);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
