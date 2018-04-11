@@ -28,8 +28,9 @@
     <string name="error_add_favorite">Adding to favorites failed. Try again.</string>
     <string name="error_empty_favorites">You have no favorites.</string>
 
-    <!-- Toast message when a movie is successfully added to `Favorites`-->
+    <!-- Toast messages when a movie is successfully added or removed to/from `Favorites`-->
     <string name="added_to_favorites">Added to Favorites.</string>
+    <string name="removed_from_favorites">Removed from Favorites.</string>
 
     <!--Message displayed to user when no movie release date, or votes are found-->
     <string name="error_missing_info">Unknown</string>

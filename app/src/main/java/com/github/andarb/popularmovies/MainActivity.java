@@ -56,6 +56,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     // Adapter used to query display Favorite movies
     private FavoritesAdapter mFavoritesAdapter;
 
+    // Keep track of the current Toast, in case we need to show another one, and cancel it
+    Toast mToast;
+
     @BindView(R.id.posters_rv)
     RecyclerView mRecyclerView;
     @BindView(R.id.posters_gv)
@@ -143,6 +146,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         super.onRestart();
     }
 
+    /* Cancel any toast before going into MovieDetailsActivity */
+    @Override
+    protected void onPause() {
+        if (mToast != null) mToast.cancel();
+
+        super.onPause();
+    }
+
     /* Download and parse a list of movies using Retrofit */
     private void retrievePosters() {
         mLoadingPB.setVisibility(View.VISIBLE);
@@ -166,11 +177,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     hideErrorMessage();
                     mLoadingPB.setVisibility(View.GONE);
                     if (mMoviesType == MOST_POPULAR) {
-                        Toast.makeText(MainActivity.this,
-                                getString(R.string.toast_most_popular), Toast.LENGTH_SHORT).show();
+                        showToast(R.string.toast_most_popular);
                     } else {
-                        Toast.makeText(MainActivity.this,
-                                getString(R.string.toast_highest_rated), Toast.LENGTH_SHORT).show();
+                        showToast(R.string.toast_highest_rated);
                     }
                 } else {
                     showErrorMessage(getString(R.string.error_server));
@@ -215,15 +224,20 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         } catch (NullPointerException e) {
             showErrorMessage(getString(R.string.error_empty_favorites));
         }
-
-        Toast.makeText(MainActivity.this,
-                getString(R.string.toast_favorites), Toast.LENGTH_SHORT).show();
     }
 
     /* Relieve adapter off old cursor that is about to be closed */
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         mFavoritesAdapter.swapCursor(null);
+    }
+
+    // Cancels a previous toast if applicable, and shows a new one
+    private void showToast(int stringResource) {
+        if (mToast != null) mToast.cancel();
+
+        mToast = Toast.makeText(this, getString(stringResource), Toast.LENGTH_SHORT);
+        mToast.show();
     }
 
 
@@ -279,6 +293,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             case R.id.favorites:
                 mMoviesType = FAVORITES;
                 getSupportLoaderManager().initLoader(0, null, this);
+                showToast(R.string.toast_favorites);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

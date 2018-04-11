@@ -92,15 +92,20 @@ public class MovieDetailsActivity extends AppCompatActivity {
     @BindView(R.id.reviews_error_tv)
     TextView mReviewErrorTV;
 
+    // Movie details object and a unique movie ID
     private com.github.andarb.popularmovies.data.Movie mMovie;
     private String mMovieId;
 
+    // Adapters for movie videos and reviews
     private VideoAdapter mTrailerAdapter;
     private ReviewAdapter mReviewAdapter;
 
+    // Used to add/remove movie to/from Favorites, and check if the movie is already in Favorites
     private ContentResolver mContentResolver;
     private boolean mIsFavorite;
 
+    // Keep track of the current Toast, in case we need to show another one, and cancel it
+    Toast mToast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -233,27 +238,12 @@ public class MovieDetailsActivity extends AppCompatActivity {
         mOverviewTV.setText(mMovie.getOverview());
     }
 
-    /* Hides the error message, and makes the movie details visible again */
-    private void hideErrorMessage() {
-        mErrorMessageView.setVisibility(View.GONE);
-        mMovieDetailsView.setVisibility(View.VISIBLE);
-    }
-
-    /* Shows the error message, and hides everything else */
-    private void showErrorMessage(String error) {
-        mDetailsPB.setVisibility(View.GONE);
-        mMovieDetailsView.setVisibility(View.GONE);
-        mErrorTV.setText(error);
-        mErrorMessageView.setVisibility(View.VISIBLE);
-    }
-
     /* Add or remove the movie from `Favorites` using content provider */
     public void amendFavorites() {
         if (mIsFavorite) {
             // Remove movie poster from internal storage
             if (!(BitmapIO.deleteImage(this, mMovieId))) {
-                Toast.makeText(this,
-                        getString(R.string.error_remove_favorite), Toast.LENGTH_LONG).show();
+                showToast(R.string.error_remove_favorite, Toast.LENGTH_LONG);
                 return;
             }
 
@@ -266,9 +256,9 @@ public class MovieDetailsActivity extends AppCompatActivity {
                     selectionArgs);
 
             if (deletedRows < 1) {
-                Toast.makeText(this,
-                        getString(R.string.error_remove_favorite), Toast.LENGTH_LONG).show();
+                showToast(R.string.error_remove_favorite, Toast.LENGTH_LONG);
             } else {
+                showToast(R.string.removed_from_favorites, Toast.LENGTH_SHORT);
                 mFavoriteButton.setImageResource(R.drawable.ic_favorite_border_white_24dp);
                 mIsFavorite = false;
             }
@@ -282,8 +272,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
              * in the db table.
              */
             if (!(BitmapIO.saveImage(this, mMovieId, posterImageUrl))) {
-                Toast.makeText(this,
-                        getString(R.string.error_add_favorite), Toast.LENGTH_LONG).show();
+                showToast(R.string.error_add_favorite, Toast.LENGTH_LONG);
                 return;
             }
 
@@ -295,11 +284,9 @@ public class MovieDetailsActivity extends AppCompatActivity {
             Uri insertedRowUri = mContentResolver.insert(FavoritesContract.FavoritesEntry.CONTENT_URI, movieCV);
 
             if (Uri.EMPTY.equals(insertedRowUri)) {
-                Toast.makeText(this,
-                        getString(R.string.error_add_favorite), Toast.LENGTH_LONG).show();
+                showToast(R.string.error_add_favorite, Toast.LENGTH_LONG);
             } else {
-                Toast.makeText(this,
-                        getString(R.string.added_to_favorites), Toast.LENGTH_SHORT).show();
+                showToast(R.string.added_to_favorites, Toast.LENGTH_SHORT);
                 mFavoriteButton.setImageResource(R.drawable.ic_favorite_white_24dp);
                 mIsFavorite = true;
             }
@@ -341,5 +328,35 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
             mFavoriteButton.setVisibility(View.VISIBLE);
         }
+    }
+
+    /* Cancel any toast before going back to MainActivity */
+    @Override
+    protected void onPause() {
+        if (mToast != null) mToast.cancel();
+
+        super.onPause();
+    }
+
+    // Cancels a previous toast if applicable, and shows a new one
+    private void showToast(int stringResource, int length) {
+        if (mToast != null) mToast.cancel();
+
+        mToast = Toast.makeText(this, getString(stringResource), length);
+        mToast.show();
+    }
+
+    /* Hides the error message, and makes the movie details visible again */
+    private void hideErrorMessage() {
+        mErrorMessageView.setVisibility(View.GONE);
+        mMovieDetailsView.setVisibility(View.VISIBLE);
+    }
+
+    /* Shows the error message, and hides everything else */
+    private void showErrorMessage(String error) {
+        mDetailsPB.setVisibility(View.GONE);
+        mMovieDetailsView.setVisibility(View.GONE);
+        mErrorTV.setText(error);
+        mErrorMessageView.setVisibility(View.VISIBLE);
     }
 }
