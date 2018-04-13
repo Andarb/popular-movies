@@ -10,8 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.github.andarb.popularmovies.R;
 import com.github.andarb.popularmovies.data.Video;
-import com.slackar.popularmovies.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;

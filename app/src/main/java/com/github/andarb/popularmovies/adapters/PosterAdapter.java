@@ -10,9 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.github.andarb.popularmovies.MovieDetailsActivity;
+import com.github.andarb.popularmovies.R;
 import com.github.andarb.popularmovies.data.Poster;
-import com.github.andarb.popularmovies.utils.BitmapIO;
-import com.slackar.popularmovies.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;

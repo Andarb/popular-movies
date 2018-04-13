@@ -30,7 +30,6 @@ import com.github.andarb.popularmovies.data.Video;
 import com.github.andarb.popularmovies.utils.BitmapIO;
 import com.github.andarb.popularmovies.utils.RetrofitClient;
 import com.github.andarb.popularmovies.utils.ReviewRecycler;
-import com.slackar.popularmovies.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -105,7 +104,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
     private boolean mIsFavorite;
 
     // Keep track of the current Toast, in case we need to show another one, and cancel it
-    Toast mToast;
+    private Toast mToast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,7 +146,12 @@ public class MovieDetailsActivity extends AppCompatActivity {
         snapHelper.attachToRecyclerView(mReviewRV);
         mReviewAdapter = new ReviewAdapter(this);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        try {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        } catch (NullPointerException e) {
+            // Action bar is not crucial for the operation of this activity, so continue as is
+            e.printStackTrace();
+        }
 
         retrieveMovieDetails();
     }
@@ -239,7 +243,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
     }
 
     /* Add or remove the movie from `Favorites` using content provider */
-    public void amendFavorites() {
+    private void amendFavorites() {
         if (mIsFavorite) {
             // Remove movie poster from internal storage
             if (!(BitmapIO.deleteImage(this, mMovieId))) {

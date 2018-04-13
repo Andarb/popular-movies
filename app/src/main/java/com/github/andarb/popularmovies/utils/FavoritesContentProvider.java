@@ -21,11 +21,11 @@ public class FavoritesContentProvider extends ContentProvider {
     private FavoritesDbHelper mDbHelper;
 
     // Help matching URIs
-    public static final int URI_FAVORITES = 200;
+    private static final int URI_FAVORITES = 200;
     private static final UriMatcher sUriMatcher = buildUriMatcher();
 
     // Create a URI matcher
-    public static UriMatcher buildUriMatcher() {
+    private static UriMatcher buildUriMatcher() {
         // NO_MATCH creates an empty URI matcher
         UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 

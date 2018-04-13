@@ -9,9 +9,9 @@ import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.ImageView;
 
+import com.github.andarb.popularmovies.R;
 import com.github.andarb.popularmovies.data.FavoritesContract;
 import com.github.andarb.popularmovies.utils.BitmapIO;
-import com.slackar.popularmovies.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -21,7 +21,7 @@ import butterknife.ButterKnife;
  * Image retrieved from internal storage and bound to a grid of ImageViews
  */
 public class FavoritesAdapter extends CursorAdapter {
-    private LayoutInflater mLayoutInflater;
+    private final LayoutInflater mLayoutInflater;
 
     public FavoritesAdapter(Context context, Cursor c, int flags) {
         super(context, c, flags);

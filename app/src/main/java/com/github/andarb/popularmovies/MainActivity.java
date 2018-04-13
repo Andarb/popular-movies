@@ -27,7 +27,6 @@ import com.github.andarb.popularmovies.data.FavoritesContract;
 import com.github.andarb.popularmovies.data.Poster;
 import com.github.andarb.popularmovies.data.PosterList;
 import com.github.andarb.popularmovies.utils.RetrofitClient;
-import com.slackar.popularmovies.R;
 
 import java.util.List;
 
@@ -57,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private FavoritesAdapter mFavoritesAdapter;
 
     // Keep track of the current Toast, in case we need to show another one, and cancel it
-    Toast mToast;
+    private Toast mToast;
 
     @BindView(R.id.posters_rv)
     RecyclerView mRecyclerView;

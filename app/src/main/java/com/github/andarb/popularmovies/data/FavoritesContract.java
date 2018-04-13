@@ -7,7 +7,7 @@ import android.provider.BaseColumns;
 public final class FavoritesContract {
 
     // Content provider constants
-    public static final String AUTHORITY = "com.slackar.popularmovies";
+    public static final String AUTHORITY = "com.github.andarb.popularmovies";
     private static final Uri BASE_URI = Uri.parse("content://" + AUTHORITY);
     public static final String PATH_FAVORITES = "favorites";
 

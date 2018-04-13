@@ -9,8 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.github.andarb.popularmovies.R;
 import com.github.andarb.popularmovies.data.Review;
-import com.slackar.popularmovies.R;
 
 import java.util.List;
 
