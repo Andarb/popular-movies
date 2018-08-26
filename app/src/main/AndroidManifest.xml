@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.github.andarb.popularmovies">
+    package="com.andarb.popmovies">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -13,7 +13,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name="com.github.andarb.popularmovies.MainActivity"
+            android:name="com.andarb.popmovies.MainActivity"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,18 +22,18 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.github.andarb.popularmovies.MovieDetailsActivity"
-            android:parentActivityName="com.github.andarb.popularmovies.MainActivity">
+            android:name="com.andarb.popmovies.MovieDetailsActivity"
+            android:parentActivityName="com.andarb.popmovies.MainActivity">
 
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.github.andarb.popularmovies.MainActivity" />
+                android:value="com.andarb.popmovies.MainActivity" />
 
         </activity>
         
         <provider
-            android:authorities="com.github.andarb.popularmovies"
-            android:name="com.github.andarb.popularmovies.utils.FavoritesContentProvider"
+            android:authorities="com.andarb.popmovies"
+            android:name="com.andarb.popmovies.utils.FavoritesContentProvider"
             android:exported="false"/>
     </application>
 

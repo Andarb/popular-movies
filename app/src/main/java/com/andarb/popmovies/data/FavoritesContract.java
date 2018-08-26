@@ -1,4 +1,4 @@
-package com.github.andarb.popularmovies.data;
+package com.andarb.popmovies.data;
 
 import android.net.Uri;
 import android.provider.BaseColumns;
@@ -7,7 +7,7 @@ import android.provider.BaseColumns;
 public final class FavoritesContract {
 
     // Content provider constants
-    public static final String AUTHORITY = "com.github.andarb.popularmovies";
+    public static final String AUTHORITY = "com.andarb.popmovies";
     private static final Uri BASE_URI = Uri.parse("content://" + AUTHORITY);
     public static final String PATH_FAVORITES = "favorites";
 

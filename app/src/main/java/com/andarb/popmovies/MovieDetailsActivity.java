@@ -1,4 +1,4 @@
-package com.github.andarb.popularmovies;
+package com.andarb.popmovies;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -21,15 +21,16 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.andarb.popularmovies.adapters.PosterAdapter;
-import com.github.andarb.popularmovies.adapters.ReviewAdapter;
-import com.github.andarb.popularmovies.adapters.VideoAdapter;
-import com.github.andarb.popularmovies.data.FavoritesContract;
-import com.github.andarb.popularmovies.data.Review;
-import com.github.andarb.popularmovies.data.Video;
-import com.github.andarb.popularmovies.utils.BitmapIO;
-import com.github.andarb.popularmovies.utils.RetrofitClient;
-import com.github.andarb.popularmovies.utils.ReviewRecycler;
+import com.andarb.popmovies.adapters.PosterAdapter;
+import com.andarb.popmovies.adapters.ReviewAdapter;
+import com.andarb.popmovies.adapters.VideoAdapter;
+import com.andarb.popmovies.data.FavoritesContract;
+import com.andarb.popmovies.data.Movie;
+import com.andarb.popmovies.data.Review;
+import com.andarb.popmovies.data.Video;
+import com.andarb.popmovies.utils.BitmapIO;
+import com.andarb.popmovies.utils.RetrofitClient;
+import com.andarb.popmovies.utils.ReviewRecycler;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -92,7 +93,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
     TextView mReviewErrorTV;
 
     // Movie details object and a unique movie ID
-    private com.github.andarb.popularmovies.data.Movie mMovie;
+    private Movie mMovie;
     private String mMovieId;
 
     // Adapters for movie videos and reviews
@@ -159,12 +160,12 @@ public class MovieDetailsActivity extends AppCompatActivity {
     /* Download and parse movie details using Retrofit */
     private void retrieveMovieDetails() {
         mDetailsPB.setVisibility(View.VISIBLE);
-        Call<com.github.andarb.popularmovies.data.Movie> getCall = RetrofitClient.getMovieDetails(mMovieId);
+        Call<Movie> getCall = RetrofitClient.getMovieDetails(mMovieId);
 
-        getCall.enqueue(new Callback<com.github.andarb.popularmovies.data.Movie>() {
+        getCall.enqueue(new Callback<Movie>() {
             @Override
-            public void onResponse(Call<com.github.andarb.popularmovies.data.Movie> call,
-                                   Response<com.github.andarb.popularmovies.data.Movie> response) {
+            public void onResponse(Call<Movie> call,
+                                   Response<Movie> response) {
                 if (response.isSuccessful()) {
                     hideErrorMessage();
 
@@ -181,7 +182,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<com.github.andarb.popularmovies.data.Movie> call, Throwable t) {
+            public void onFailure(Call<Movie> call, Throwable t) {
                 showErrorMessage(getString(R.string.error_internet));
             }
         });

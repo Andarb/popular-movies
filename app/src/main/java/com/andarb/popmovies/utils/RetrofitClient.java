@@ -1,10 +1,10 @@
-package com.github.andarb.popularmovies.utils;
+package com.andarb.popmovies.utils;
 
 
-import com.github.andarb.popularmovies.BuildConfig;
-import com.github.andarb.popularmovies.MainActivity;
-import com.github.andarb.popularmovies.data.Movie;
-import com.github.andarb.popularmovies.data.PosterList;
+import com.andarb.popmovies.BuildConfig;
+import com.andarb.popmovies.MainActivity;
+import com.andarb.popmovies.data.Movie;
+import com.andarb.popmovies.data.PosterList;
 
 import retrofit2.Call;
 import retrofit2.Retrofit;

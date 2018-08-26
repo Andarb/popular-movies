@@ -1,4 +1,4 @@
-package com.github.andarb.popularmovies.adapters;
+package com.andarb.popmovies.adapters;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -9,9 +9,9 @@ import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.ImageView;
 
-import com.github.andarb.popularmovies.R;
-import com.github.andarb.popularmovies.data.FavoritesContract;
-import com.github.andarb.popularmovies.utils.BitmapIO;
+import com.andarb.popmovies.R;
+import com.andarb.popmovies.data.FavoritesContract;
+import com.andarb.popmovies.utils.BitmapIO;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

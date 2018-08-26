@@ -1,4 +1,4 @@
-package com.github.andarb.popularmovies.utils;
+package com.andarb.popmovies.utils;
 
 import android.content.ContentProvider;
 import android.content.ContentUris;
@@ -11,9 +11,9 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.github.andarb.popularmovies.data.FavoritesContract;
+import com.andarb.popmovies.data.FavoritesContract;
 
-import static com.github.andarb.popularmovies.data.FavoritesContract.FavoritesEntry.TABLE_NAME;
+import static com.andarb.popmovies.data.FavoritesContract.FavoritesEntry.TABLE_NAME;
 
 /* Content provider for the user's favorite movies */
 public class FavoritesContentProvider extends ContentProvider {

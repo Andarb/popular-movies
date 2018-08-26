@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
-    tools:context="com.github.andarb.popularmovies.MainActivity">
+    tools:context="com.andarb.popmovies.MainActivity">
 
     <!-- RecyclerView for Most Popular/Highest Rated movies, and GridView for Favorites that uses CursorAdapter -->
 

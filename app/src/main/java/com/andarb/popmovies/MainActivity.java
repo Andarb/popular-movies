@@ -1,4 +1,4 @@
-package com.github.andarb.popularmovies;
+package com.andarb.popmovies;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -21,12 +21,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.andarb.popularmovies.adapters.FavoritesAdapter;
-import com.github.andarb.popularmovies.adapters.PosterAdapter;
-import com.github.andarb.popularmovies.data.FavoritesContract;
-import com.github.andarb.popularmovies.data.Poster;
-import com.github.andarb.popularmovies.data.PosterList;
-import com.github.andarb.popularmovies.utils.RetrofitClient;
+import com.andarb.popmovies.adapters.FavoritesAdapter;
+import com.andarb.popmovies.adapters.PosterAdapter;
+import com.andarb.popmovies.data.FavoritesContract;
+import com.andarb.popmovies.data.Poster;
+import com.andarb.popmovies.data.PosterList;
+import com.andarb.popmovies.utils.RetrofitClient;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.github.andarb.popularmovies.adapters;
+package com.andarb.popmovies.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -9,8 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.github.andarb.popularmovies.R;
-import com.github.andarb.popularmovies.data.Review;
+import com.andarb.popmovies.R;
+import com.andarb.popmovies.data.Review;
 
 import java.util.List;
 

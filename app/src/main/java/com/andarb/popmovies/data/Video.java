@@ -1,4 +1,4 @@
-package com.github.andarb.popularmovies.data;
+package com.andarb.popmovies.data;
 
 /* Movie video retrieved from themoviedb JSON */
 public class Video {

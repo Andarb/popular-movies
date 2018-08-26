@@ -1,4 +1,4 @@
-package com.github.andarb.popularmovies.data;
+package com.andarb.popmovies.data;
 
 import com.google.gson.annotations.SerializedName;
 

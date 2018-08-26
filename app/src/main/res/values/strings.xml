@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Popular Movies</string>
+    <string name="app_name">Pop Movies</string>
 
     <!--Used in overflow menu to sort movie posters in various ways-->
     <string name="menu_most_popular">Most Popular</string>

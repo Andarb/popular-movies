@@ -1,4 +1,4 @@
-package com.github.andarb.popularmovies.utils;
+package com.andarb.popmovies.utils;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
